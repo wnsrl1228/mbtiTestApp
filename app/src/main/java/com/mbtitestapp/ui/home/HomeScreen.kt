@@ -1,6 +1,5 @@
 package com.mbtitestapp.ui.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mbtitestapp.MbitTopAppBar
-import com.mbtitestapp.MbtiApp
 import com.mbtitestapp.R
 import com.mbtitestapp.navigation.NavigationDestination
 import com.mbtitestapp.ui.menu.MbtiTestMenuDestination

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -25,8 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.mbtitestapp.MbitTopAppBar
 import com.mbtitestapp.R
 import com.mbtitestapp.navigation.NavigationDestination
-import com.mbtitestapp.ui.home.HomeBody
-import com.mbtitestapp.ui.home.HomeScreen
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
 
 object MbtiTestMenuDestination : NavigationDestination {
@@ -38,6 +35,7 @@ object MbtiTestMenuDestination : NavigationDestination {
 fun MbtiTestMenuScreen(
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
+    navigateToSelect: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -50,6 +48,7 @@ fun MbtiTestMenuScreen(
         modifier = modifier,
     ) { innerPadding ->
         MbtiTestMenuBody(
+            onMbtiTestStartButtonClick = navigateToSelect,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -59,7 +58,10 @@ fun MbtiTestMenuScreen(
 }
 
 @Composable
-fun MbtiTestMenuBody(modifier: Modifier) {
+fun MbtiTestMenuBody(
+    modifier: Modifier,
+    onMbtiTestStartButtonClick: () -> Unit,
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(32.dp),
@@ -72,7 +74,7 @@ fun MbtiTestMenuBody(modifier: Modifier) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = {  },
+            onClick = onMbtiTestStartButtonClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp)
@@ -131,6 +133,6 @@ fun MbtiTestMenuBody(modifier: Modifier) {
 @Composable
 fun GreetingPreview() {
     MbtiTestAppTheme {
-        MbtiTestMenuScreen(navigateBack = { /*Do nothing*/ })
+        MbtiTestMenuScreen(navigateBack = { /*Do nothing*/ },navigateToSelect = {} )
     }
 }
