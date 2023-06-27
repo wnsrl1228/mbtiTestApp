@@ -17,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +35,7 @@ import com.mbtitestapp.R
 import com.mbtitestapp.data.QuestionData
 import com.mbtitestapp.navigation.NavigationDestination
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
-
+import androidx.lifecycle.viewmodel.compose.viewModel
 enum class RadioButtonOption {
     NONE,
     OPTION_1,
@@ -45,13 +46,12 @@ enum class RadioButtonOption {
 object SelectDestination : NavigationDestination {
     override val route = "select"
     override val titleRes = R.string.app_name
-
 }
 
 @Composable
 fun SelectScreen(
     modifier: Modifier = Modifier,
-    options: List<QuestionData>
+    options: List<QuestionData>,
 ) {
     Scaffold(
         modifier = modifier,
@@ -69,52 +69,42 @@ fun SelectScreen(
 @Composable
 fun SelectBody(
     options: List<QuestionData>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: SelectViewModel = viewModel()
 ) {
 
-    var selectedOption by remember { mutableStateOf(RadioButtonOption.NONE) } // 현재 선택된 버튼
-
+    val uiState by viewModel.uiState.collectAsState()
+    val questionDataList = uiState.questionDataList                // mbti 테스트 관련 데이터
     var currentQuestionNum by remember { mutableStateOf(0) } // 현재 선택된 버튼
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(32.dp),
         modifier = modifier
             .padding(horizontal = 32.dp),
     ) {
+
         Text(
-            text = "${currentQuestionNum+1}/${options.size}",
+            text = "${currentQuestionNum+1}/${questionDataList.size}",
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold
         )
+
         Text(
-            text = options[currentQuestionNum].questionText,
+            text = questionDataList[currentQuestionNum].questionText,
             fontSize = 26.sp,
             textAlign = TextAlign.Center,
             lineHeight = 1.5.em,
             modifier = Modifier.height(100.dp)
         )
 
-        OptionRadioButton(
-            selected = selectedOption == RadioButtonOption.OPTION_1,
-            onOptionSelected = { selectedOption = RadioButtonOption.OPTION_1 },
-            text = options[currentQuestionNum].option1.first
+        QuestionOption(
+            viewModel = viewModel,
+            optionText1 = questionDataList[currentQuestionNum].option1.first,
+            optionText2 = questionDataList[currentQuestionNum].option2.first,
+            currentQuestionNum = currentQuestionNum,
+            selectedOption = uiState.selectedOptions[currentQuestionNum]
         )
-
-        Text(
-            text = "VS",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold
-        )
-        OptionRadioButton(
-            selected = selectedOption == RadioButtonOption.OPTION_2,
-            onOptionSelected = { selectedOption = RadioButtonOption.OPTION_2 },
-            text = options[currentQuestionNum].option1.first
-        )
-        OtherRadioButton(
-            selected = selectedOption == RadioButtonOption.OTHER,
-            onOptionSelected = { selectedOption = RadioButtonOption.OTHER }
-        )
-
 
         Row(
             modifier = Modifier
@@ -122,7 +112,12 @@ fun SelectBody(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button(
-                onClick = { currentQuestionNum-- },
+                onClick = {
+                    /**
+                     * - 이전 버튼 클릭시
+                     * 1. 현재 질문지 숫자 1 감소
+                     */
+                    currentQuestionNum-- },
                 enabled = currentQuestionNum > 0,
                 modifier = Modifier.width(100.dp)
             ) {
@@ -130,15 +125,49 @@ fun SelectBody(
             }
 
             Button(
-                onClick = { currentQuestionNum++ },
-                enabled = currentQuestionNum < options.size - 1,
+                onClick = {
+                    currentQuestionNum++
+                          },
+                enabled = currentQuestionNum < options.size - 1 &&
+                        uiState.selectedOptions[currentQuestionNum] != RadioButtonOption.NONE,
             ) {
                 Text(text = "다음")
             }
         }
     }
 }
+@Composable
+fun QuestionOption(
+    viewModel: SelectViewModel,
+    optionText1: String,
+    optionText2: String,
+    currentQuestionNum: Int,
+    selectedOption: RadioButtonOption
 
+) {
+    OptionRadioButton(
+        selected = selectedOption == RadioButtonOption.OPTION_1,
+        onOptionSelected = {viewModel.setCurrentSelectedOption(currentQuestionNum, RadioButtonOption.OPTION_1)},
+        text = optionText1
+    )
+
+    Text(
+        text = "VS",
+        fontSize = 30.sp,
+        fontWeight = FontWeight.Bold
+    )
+
+    OptionRadioButton(
+        selected = selectedOption == RadioButtonOption.OPTION_2,
+        onOptionSelected = {viewModel.setCurrentSelectedOption(currentQuestionNum, RadioButtonOption.OPTION_2)},
+        text = optionText2
+    )
+
+    OtherRadioButton(
+        selected = selectedOption == RadioButtonOption.OTHER,
+        onOptionSelected = {viewModel.setCurrentSelectedOption(currentQuestionNum, RadioButtonOption.OTHER)}
+    )
+}
 @Composable
 fun OptionRadioButton(
     selected: Boolean,
