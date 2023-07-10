@@ -36,6 +36,8 @@ import com.mbtitestapp.data.QuestionData
 import com.mbtitestapp.navigation.NavigationDestination
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mbtitestapp.ui.AppViewModelProvider
+
 enum class RadioButtonOption {
     NONE,
     OPTION_1,
@@ -52,16 +54,20 @@ object SelectDestination : NavigationDestination {
 fun SelectScreen(
     modifier: Modifier = Modifier,
     options: List<QuestionData>,
+    navigateToMbtiResult: () -> Unit,
+    viewModel: SelectViewModel,
 ) {
     Scaffold(
         modifier = modifier,
     ) { innerPadding ->
         SelectBody(
             options = options,
+            onMbtiResultButtonClick = navigateToMbtiResult,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .wrapContentSize(Alignment.Center)
+                .wrapContentSize(Alignment.Center),
+            viewModel = viewModel
         )
     }
 }
@@ -70,7 +76,8 @@ fun SelectScreen(
 fun SelectBody(
     options: List<QuestionData>,
     modifier: Modifier = Modifier,
-    viewModel: SelectViewModel = viewModel()
+    onMbtiResultButtonClick: () -> Unit,
+    viewModel: SelectViewModel,
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -124,15 +131,26 @@ fun SelectBody(
                 Text(text = "이전")
             }
 
-            Button(
-                onClick = {
-                    currentQuestionNum++
-                          },
-                enabled = currentQuestionNum < options.size - 1 &&
-                        uiState.selectedOptions[currentQuestionNum] != RadioButtonOption.NONE,
-            ) {
-                Text(text = "다음")
+
+            if (currentQuestionNum == options.size - 1) {
+                Button(
+                    onClick = onMbtiResultButtonClick,
+                    enabled = uiState.selectedOptions[currentQuestionNum] != RadioButtonOption.NONE,
+                ) {
+                    Text(text = "결과 보기")
+                }
+            } else {
+                Button(
+                    onClick = {
+                        currentQuestionNum++
+                    },
+                    enabled = currentQuestionNum < options.size - 1 &&
+                            uiState.selectedOptions[currentQuestionNum] != RadioButtonOption.NONE,
+                ) {
+                    Text(text = "다음")
+                }
             }
+
         }
     }
 }
@@ -224,6 +242,6 @@ fun OtherRadioButton(
 @Composable
 fun GreetingPreview() {
     MbtiTestAppTheme {
-        SelectScreen(options = listOf())
+        SelectScreen(options = listOf(), navigateToMbtiResult = {}, viewModel = viewModel())
     }
 }
