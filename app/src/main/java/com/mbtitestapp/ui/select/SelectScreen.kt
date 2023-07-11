@@ -107,8 +107,8 @@ fun SelectBody(
 
         QuestionOption(
             viewModel = viewModel,
-            optionText1 = questionDataList[currentQuestionNum].option1.first,
-            optionText2 = questionDataList[currentQuestionNum].option2.first,
+            optionText1 = questionDataList[currentQuestionNum].option1.optionText,
+            optionText2 = questionDataList[currentQuestionNum].option2.optionText,
             currentQuestionNum = currentQuestionNum,
             selectedOption = uiState.selectedOptions[currentQuestionNum]
         )

@@ -58,12 +58,14 @@ fun MbtiResultBody(
         modifier = modifier
             .padding(horizontal = 32.dp),
     ) {
-        Text(text = "-" + uiState.selectedOptions.size)
+        Text(text = "- " + uiState.selectedOptions.size)
+        Text(text = "- " + viewModel.getMbtiTestResult())
 
 
         for (i in uiState.selectedOptions) {
             Text(text = i.name)
         }
+
 
         Button(onClick = { viewModel.setCurrentSelectedOption(1, RadioButtonOption.OPTION_1) }) {
 
