@@ -64,12 +64,15 @@ class SelectViewModel : ViewModel() {
             }
         }
 
-        // 점수를 통해 mbti 결과 도출
-        var resultMbtiText: String = ""
+        /**
+         * 점수를 통해 mbti 결과 도출
+         * - 점수가 0이면 ESFP
+         */
+        var resultMbtiText = ""
         resultMbtiText += if (mbtiScore[MbtiType.I] ?: 0 > mbtiScore[MbtiType.E] ?: 0) "I" else "E"
-        resultMbtiText += if (mbtiScore[MbtiType.S] ?: 0 > mbtiScore[MbtiType.N] ?: 0) "S" else "N"
+        resultMbtiText += if (mbtiScore[MbtiType.S] ?: 0 >= mbtiScore[MbtiType.N] ?: 0) "S" else "N"
         resultMbtiText += if (mbtiScore[MbtiType.T] ?: 0 > mbtiScore[MbtiType.F] ?: 0) "T" else "F"
-        resultMbtiText += if (mbtiScore[MbtiType.P] ?: 0 > mbtiScore[MbtiType.J] ?: 0) "P" else "J"
+        resultMbtiText += if (mbtiScore[MbtiType.P] ?: 0 >= mbtiScore[MbtiType.J] ?: 0) "P" else "J"
 
         // text -> enum 변경
         val resultMbti: MbtiEnum = MbtiEnum.values().find { it.name == resultMbtiText }
