@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.mbtitestapp.data.MbtiCategory
 import com.mbtitestapp.data.MbtiEnum
 import com.mbtitestapp.data.MbtiOptionData
+import com.mbtitestapp.data.MbtiTestResultInfo
 import com.mbtitestapp.data.MbtiType
 import com.mbtitestapp.data.QuestionData
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +38,7 @@ class SelectViewModel : ViewModel() {
     /**
      * 테스트 결과 출력
      */
-    fun getMbtiTestResult(): MbtiEnum {
+    fun getMbtiTestResultInfo(): MbtiTestResultInfo {
         val selectedOptions = _uiState.value.selectedOptions
         val questionDataList = _uiState.value.questionDataList
 
@@ -68,17 +69,34 @@ class SelectViewModel : ViewModel() {
          * 점수를 통해 mbti 결과 도출
          * - 점수가 0이면 ESFP
          */
-        var resultMbtiText = ""
-        resultMbtiText += if (mbtiScore[MbtiType.I] ?: 0 > mbtiScore[MbtiType.E] ?: 0) "I" else "E"
-        resultMbtiText += if (mbtiScore[MbtiType.S] ?: 0 >= mbtiScore[MbtiType.N] ?: 0) "S" else "N"
-        resultMbtiText += if (mbtiScore[MbtiType.T] ?: 0 > mbtiScore[MbtiType.F] ?: 0) "T" else "F"
-        resultMbtiText += if (mbtiScore[MbtiType.P] ?: 0 >= mbtiScore[MbtiType.J] ?: 0) "P" else "J"
+        val mbtiTypes = listOf(MbtiType.I, MbtiType.E, MbtiType.N, MbtiType.S, MbtiType.T, MbtiType.F, MbtiType.J, MbtiType.P)
+        val scores = mutableListOf<Int>()
+        val resultMbtiText = StringBuilder()
+
+        for (i in mbtiTypes.indices step 2) {
+            val firstType = mbtiTypes[i]
+            val secondType = mbtiTypes[i + 1]
+
+            val firstScore = mbtiScore[firstType] ?: 0
+            val secondScore = mbtiScore[secondType] ?: 0
+
+            resultMbtiText.append(
+                if (firstScore > secondScore) {
+                    scores.add(firstScore)
+                    firstType.name
+                } else {
+                    scores.add(secondScore)
+                    secondType.name
+                }
+            )
+        }
 
         // text -> enum 변경
-        val resultMbti: MbtiEnum = MbtiEnum.values().find { it.name == resultMbtiText }
+        val resultMbti: MbtiEnum = MbtiEnum.values().find { it.name == resultMbtiText.toString() }
             ?: throw IllegalArgumentException("Invalid MBTI type")
 
-        return resultMbti
+
+        return MbtiTestResultInfo(scores, resultMbti)
     }
 
     private fun updateMBTIScore(
@@ -89,12 +107,12 @@ class SelectViewModel : ViewModel() {
         if (selectedOption == RadioButtonOption.OPTION_1) {
 
             val mbtiType: MbtiType = questionData.option1.mbtiType
-            mbtiScore[mbtiType] = mbtiScore[mbtiType]!!.plus(1)
+            mbtiScore[mbtiType] = mbtiScore[mbtiType]!!.plus(3)
 
         } else if (selectedOption == RadioButtonOption.OPTION_2) {
 
             val mbtiType: MbtiType = questionData.option2.mbtiType
-            mbtiScore[mbtiType] = mbtiScore[mbtiType]!!.plus(1)
+            mbtiScore[mbtiType] = mbtiScore[mbtiType]!!.plus(3)
         }
     }
 

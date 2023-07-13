@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import com.mbtitestapp.data.MbtiEnum
+import com.mbtitestapp.data.MbtiTestResultInfo
 
 object MbtiResultDestination : NavigationDestination {
     override val route = "mbti_result"
@@ -64,6 +65,7 @@ fun MbtiResultBody(
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
+    val mbtiTestResultInfo: MbtiTestResultInfo = viewModel.getMbtiTestResultInfo()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -80,7 +82,7 @@ fun MbtiResultBody(
         )
 
         Text(
-            text = "ISTP \n 현실주의 파괴자",
+            text = mbtiTestResultInfo.mbtiEnum.name + "\n 현실주의 파괴자",
             fontSize = 26.sp,
             textAlign = TextAlign.Center,
             lineHeight = 1.5.em,
@@ -97,8 +99,8 @@ fun MbtiResultBody(
 
         BarChart(
             maxHeight = defaultMaxHeight,
-            values = listOf(27,0,16,5), // 임시
-            mbtiResult = MbtiEnum.ENFJ // 임시
+            values = mbtiTestResultInfo.scores,
+            mbtiResult = mbtiTestResultInfo.mbtiEnum
         )
 
         Button(

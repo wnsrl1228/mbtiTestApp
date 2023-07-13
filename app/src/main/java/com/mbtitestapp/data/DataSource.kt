@@ -50,3 +50,8 @@ data class MbtiOptionData (
     val optionText: String,
     val mbtiType: MbtiType
 )
+
+data class MbtiTestResultInfo(
+    val scores: List<Int>,
+    val mbtiEnum: MbtiEnum
+)
