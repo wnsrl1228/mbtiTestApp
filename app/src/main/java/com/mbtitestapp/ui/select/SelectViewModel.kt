@@ -36,6 +36,13 @@ class SelectViewModel : ViewModel() {
     }
 
     /**
+     * 초기화
+     */
+    fun resetSelectUiState() {
+        _uiState.value = SelectUiState(questionDataList = questionDataList())
+    }
+
+    /**
      * 테스트 결과 출력
      */
     fun getMbtiTestResultInfo(): MbtiTestResultInfo {

@@ -46,12 +46,14 @@ object MbtiResultDestination : NavigationDestination {
 fun MbtiResultScreen (
     modifier: Modifier = Modifier,
     viewModel: SelectViewModel,
+    navigateToHome: () -> Unit
 ) {
     Scaffold(
         modifier = modifier,
     ) { innerPadding ->
         MbtiResultBody(
             viewModel = viewModel,
+            navigateToHome = navigateToHome,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -61,6 +63,7 @@ fun MbtiResultScreen (
 @Composable
 fun MbtiResultBody(
     viewModel: SelectViewModel,
+    navigateToHome: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -111,7 +114,10 @@ fun MbtiResultBody(
             Text(text = "질문별 결과보기")
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                viewModel.resetSelectUiState()
+                navigateToHome()
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp)) {
@@ -279,6 +285,6 @@ private fun AxisLabels(
 @Composable
 fun GreetingPreview() {
     MbtiTestAppTheme {
-        MbtiResultScreen(viewModel = viewModel())
+        MbtiResultScreen(viewModel = viewModel(), navigateToHome = {})
     }
 }

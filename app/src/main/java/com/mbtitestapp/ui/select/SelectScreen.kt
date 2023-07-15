@@ -1,5 +1,8 @@
 package com.mbtitestapp.ui.select
 
+import android.app.Activity
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,9 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,8 +61,40 @@ fun SelectScreen(
     modifier: Modifier = Modifier,
     options: List<QuestionData>,
     navigateToMbtiResult: () -> Unit,
+    navigateToHome: () -> Unit,
     viewModel: SelectViewModel,
 ) {
+
+    var showAlertDialog by remember { mutableStateOf(false) }    // 팝업 창을 표시할 컴포저블 UI
+    if (showAlertDialog) {
+        AlertDialog(
+            title = {
+                Text(text = "테스트를 종료하시겠습니까?")
+            },
+            text = {
+                Text(text = "지금까지 진행된 테스트는 저장되지 않습니다.")
+            },
+            onDismissRequest = { showAlertDialog = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.resetSelectUiState()
+                    navigateToHome()
+                }) {
+                    Text(text = "확인")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAlertDialog = false }) {
+                    Text(text = "취소")
+                }
+            }
+        )
+    }
+    BackHandler(enabled = true) {
+        showAlertDialog = true
+    }
+
+
     Scaffold(
         modifier = modifier,
     ) { innerPadding ->
@@ -242,6 +280,6 @@ fun OtherRadioButton(
 @Composable
 fun GreetingPreview() {
     MbtiTestAppTheme {
-        SelectScreen(options = listOf(), navigateToMbtiResult = {}, viewModel = viewModel())
+        SelectScreen(options = listOf(), navigateToMbtiResult = {}, navigateToHome = {}, viewModel = viewModel())
     }
 }

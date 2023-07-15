@@ -48,13 +48,15 @@ fun MbtiNavHost(
             SelectScreen(
                 options = questionDataList,
                 navigateToMbtiResult = {navController.navigate(MbtiResultDestination.route)},
+                navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
                 viewModel = viewModel
             )
         }
 
         composable(route = MbtiResultDestination.route) {
             MbtiResultScreen(
-                viewModel = viewModel
+                viewModel = viewModel,
+                navigateToHome = {navController.popBackStack(HomeDestination.route, false)}
             )
         }
 
