@@ -15,4 +15,7 @@ interface MbtiInfoDao {
     @Insert
     fun insertAll(mbtiInfo: List<MbtiInfo>)
 
+    @Query("SELECT COUNT(*) FROM mbti_info")
+    suspend fun getCount(): Int
+
 }
