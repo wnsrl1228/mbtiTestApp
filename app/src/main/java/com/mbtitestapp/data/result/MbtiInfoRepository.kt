@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 class MbtiInfoRepository(private val mbtiInfoDao: MbtiInfoDao) {
 
-    fun getMbtiInfoStream(mbti: Mbti): Flow<MbtiInfo> = mbtiInfoDao.getMbtiResultInfo(mbti)
+    fun getMbtiInfoStream(mbti: Mbti): Flow<MbtiInfo> = mbtiInfoDao.getMbtiInfo(mbti)
 }

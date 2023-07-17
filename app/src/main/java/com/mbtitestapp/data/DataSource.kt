@@ -1,5 +1,9 @@
 package com.mbtitestapp.data
 
+import android.content.Context
+import com.mbtitestapp.data.result.MbtiInfo
+import org.json.JSONObject
+
 /**
  * 임시 데이터
  */
@@ -55,3 +59,23 @@ data class MbtiTestResultInfo(
     val scores: List<Int>,
     val mbti: Mbti
 )
+
+/**
+ * db에 추가할 초기 데이터
+ */
+object InitialDataUtils {
+    fun getInitialData(context: Context): List<MbtiInfo> {
+        val json = context.assets.open("initial_data.json").bufferedReader().use { it.readText() }
+        val jsonObject = JSONObject(json)
+        val initialData = mutableListOf<MbtiInfo>()
+
+        for (mbtiStr in jsonObject.keys()) {
+            val description = jsonObject.getJSONObject(mbtiStr).getString("description")
+            val mbti: Mbti = Mbti.values().find { it.name == mbtiStr }
+                ?: throw IllegalArgumentException("Invalid MBTI type")
+            initialData.add(MbtiInfo(mbti, description))
+        }
+
+        return initialData
+    }
+}

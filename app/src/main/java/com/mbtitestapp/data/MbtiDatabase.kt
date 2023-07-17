@@ -6,6 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.mbtitestapp.data.result.MbtiInfoDao
 import com.mbtitestapp.data.result.MbtiInfo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Database(entities = [MbtiInfo::class], version = 1, exportSchema = false)
 abstract class MbtiDatabase : RoomDatabase() {
@@ -19,9 +22,18 @@ abstract class MbtiDatabase : RoomDatabase() {
         fun getDatabase(context: Context): MbtiDatabase {
 
             return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, MbtiDatabase::class.java, "mbti_database")
+                val instance = Room.databaseBuilder(context.applicationContext, MbtiDatabase::class.java, "mbti_database")
                     .build()
-                    .also { Instance = it }
+
+                // 초기 데이터 삽입
+                val initialData = InitialDataUtils.getInitialData(context)
+                CoroutineScope(Dispatchers.IO).launch {
+                    instance.mbtiDao().insertAll(initialData)
+                }
+
+                Instance = instance
+                instance
+
             }
         }
     }
