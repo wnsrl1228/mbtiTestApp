@@ -28,14 +28,22 @@ import com.mbtitestapp.ui.select.SelectViewModel
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import com.mbtitestapp.data.MbtiEnum
+import com.mbtitestapp.data.Mbti
 import com.mbtitestapp.data.MbtiTestResultInfo
+import com.mbtitestapp.data.result.MbtiInfo
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 object MbtiResultDestination : NavigationDestination {
     override val route = "mbti_result"
@@ -48,6 +56,7 @@ fun MbtiResultScreen (
     viewModel: SelectViewModel,
     navigateToHome: () -> Unit
 ) {
+
     Scaffold(
         modifier = modifier,
     ) { innerPadding ->
@@ -85,7 +94,7 @@ fun MbtiResultBody(
         )
 
         Text(
-            text = mbtiTestResultInfo.mbtiEnum.name + "\n 현실주의 파괴자",
+            text = mbtiTestResultInfo.mbti.name + "\n 현실주의 파괴자",
             fontSize = 26.sp,
             textAlign = TextAlign.Center,
             lineHeight = 1.5.em,
@@ -100,10 +109,26 @@ fun MbtiResultBody(
             lineHeight = 1.5.em,
         )
 
+        // --- 임시
+        val coroutineScope = rememberCoroutineScope()
+        val resultState = remember { mutableStateOf("") }
+
+        LaunchedEffect(Unit) {
+            coroutineScope.launch {
+                val result = viewModel.getMbtiInfo(mbtiTestResultInfo.mbti).first()
+                resultState.value = result?.description ?: "null 입니다"
+            }
+        }
+        // ---
+        Text(
+            text = "asd" + resultState +"asd",
+            fontSize = 14.sp,
+            lineHeight = 1.5.em,
+        )
         BarChart(
             maxHeight = defaultMaxHeight,
             values = mbtiTestResultInfo.scores,
-            mbtiResult = mbtiTestResultInfo.mbtiEnum
+            mbtiResult = mbtiTestResultInfo.mbti
         )
 
         Button(
@@ -135,7 +160,7 @@ private val INTENSITY_LABELS = listOf("매우", "보통", "약간", "약간", "�
 internal fun BarChart(
     modifier: Modifier = Modifier,
     values: List<Int>,
-    mbtiResult: MbtiEnum,
+    mbtiResult: Mbti,
     maxHeight: Dp = defaultMaxHeight  // 차트 높이
 ) {
 
@@ -216,7 +241,7 @@ internal fun BarChart(
 private fun Bar(
     score: Int,
     index: Int,
-    mbtiResult: MbtiEnum,
+    mbtiResult: Mbti,
     modifier: Modifier = Modifier
 ) {
 

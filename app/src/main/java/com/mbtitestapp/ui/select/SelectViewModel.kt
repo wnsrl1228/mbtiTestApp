@@ -1,12 +1,15 @@
 package com.mbtitestapp.ui.select
 
 import androidx.lifecycle.ViewModel
+import com.mbtitestapp.data.Mbti
 import com.mbtitestapp.data.MbtiCategory
-import com.mbtitestapp.data.MbtiEnum
 import com.mbtitestapp.data.MbtiOptionData
 import com.mbtitestapp.data.MbtiTestResultInfo
 import com.mbtitestapp.data.MbtiType
 import com.mbtitestapp.data.QuestionData
+import com.mbtitestapp.data.result.MbtiInfoRepository
+import com.mbtitestapp.data.result.MbtiInfo
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,12 +20,19 @@ data class SelectUiState(
     val selectedOptions: List<RadioButtonOption> = List(4) {RadioButtonOption.NONE},
 )
 
-class SelectViewModel : ViewModel() {
+class SelectViewModel(private val mbtiInfoRepository: MbtiInfoRepository) : ViewModel() {
 
 
     private val _uiState = MutableStateFlow(SelectUiState(questionDataList = questionDataList()))
     val uiState: StateFlow<SelectUiState> = _uiState.asStateFlow()
 
+
+    /**
+     *  mbti 에 대한 결과정보
+     */
+    suspend fun getMbtiInfo(mbti: Mbti): Flow<MbtiInfo> {
+        return mbtiInfoRepository.getMbtiInfoStream(mbti)
+    }
 
     /**
      * 질문지에서 현재 선택한 항목으로 데이터 변경
@@ -99,7 +109,7 @@ class SelectViewModel : ViewModel() {
         }
 
         // text -> enum 변경
-        val resultMbti: MbtiEnum = MbtiEnum.values().find { it.name == resultMbtiText.toString() }
+        val resultMbti: Mbti = Mbti.values().find { it.name == resultMbtiText.toString() }
             ?: throw IllegalArgumentException("Invalid MBTI type")
 
 

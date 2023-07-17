@@ -32,7 +32,7 @@ enum class MbtiType {
     E, I, S, N, T, F, J, P
 }
 
-enum class MbtiEnum {
+enum class Mbti {
     INFJ, INFP, INTJ, INTP,
     ISFJ, ISFP, ISTJ, ISTP,
     ENFJ, ENFP, ENTJ, ENTP,
@@ -53,5 +53,5 @@ data class MbtiOptionData (
 
 data class MbtiTestResultInfo(
     val scores: List<Int>,
-    val mbtiEnum: MbtiEnum
+    val mbti: Mbti
 )
