@@ -8,5 +8,7 @@ import com.mbtitestapp.data.Mbti
 data class MbtiInfo(
     @PrimaryKey
     val mbti: Mbti,
-    val description: String,
+    val name: String,
+    val shortDesc: String,
+    val detailedDesc: String,
 )

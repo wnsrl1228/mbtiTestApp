@@ -70,10 +70,12 @@ object InitialDataUtils {
         val initialData = mutableListOf<MbtiInfo>()
 
         for (mbtiStr in jsonObject.keys()) {
-            val description = jsonObject.getJSONObject(mbtiStr).getString("description")
+            val name = jsonObject.getJSONObject(mbtiStr).getString("name")
+            val shortDesc = jsonObject.getJSONObject(mbtiStr).getString("shortDesc")
+            val detailedDesc = jsonObject.getJSONObject(mbtiStr).getString("detailedDesc")
             val mbti: Mbti = Mbti.values().find { it.name == mbtiStr }
                 ?: throw IllegalArgumentException("Invalid MBTI type")
-            initialData.add(MbtiInfo(mbti, description))
+            initialData.add(MbtiInfo(mbti, name, shortDesc, detailedDesc))
         }
 
         return initialData

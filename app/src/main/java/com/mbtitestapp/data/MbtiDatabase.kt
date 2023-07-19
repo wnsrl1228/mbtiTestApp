@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-@Database(entities = [MbtiInfo::class], version = 1, exportSchema = false)
+@Database(entities = [MbtiInfo::class], version = 2, exportSchema = false)
 abstract class MbtiDatabase : RoomDatabase() {
 
     abstract fun mbtiDao(): MbtiInfoDao
@@ -24,6 +24,7 @@ abstract class MbtiDatabase : RoomDatabase() {
 
             return Instance ?: synchronized(this) {
                 val instance = Room.databaseBuilder(context.applicationContext, MbtiDatabase::class.java, "mbti_database")
+                    .fallbackToDestructiveMigration()
                     .build()
 
                 // 초기 데이터 삽입

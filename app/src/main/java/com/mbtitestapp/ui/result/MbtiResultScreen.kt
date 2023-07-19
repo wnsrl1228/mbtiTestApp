@@ -79,6 +79,15 @@ fun MbtiResultBody(
     val uiState by viewModel.uiState.collectAsState()
     val mbtiTestResultInfo: MbtiTestResultInfo = viewModel.getMbtiTestResultInfo()
 
+    val coroutineScope = rememberCoroutineScope()
+    val mbtiInfo = remember { mutableStateOf<MbtiInfo?>(null) }
+
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            mbtiInfo.value = viewModel.getMbtiInfo(mbtiTestResultInfo.mbti).first()
+        }
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(32.dp),
@@ -94,7 +103,7 @@ fun MbtiResultBody(
         )
 
         Text(
-            text = mbtiTestResultInfo.mbti.name + "\n 현실주의 파괴자",
+            text = mbtiTestResultInfo.mbti.name + "\n" + mbtiInfo.value?.name,
             fontSize = 26.sp,
             textAlign = TextAlign.Center,
             lineHeight = 1.5.em,
@@ -102,29 +111,11 @@ fun MbtiResultBody(
         )
 
         Text(
-            text = "온화하고 적극적이며 책임감이 강하고 사교성이 풍부하고 동정심이 많다." +
-                    " 상당히 이타적이고 민첩하고 인화를 중요시하며 참을성이 많다. " +
-                    "다른 사람들의 생각이나 의견에 진지한 관심을 가지고... 자세히 보기 ",
-            fontSize = 14.sp,
+            text = mbtiInfo.value?.detailedDesc ?: "",
+            fontSize = 16.sp,
             lineHeight = 1.5.em,
         )
 
-        // --- 임시
-        val coroutineScope = rememberCoroutineScope()
-        val resultState = remember { mutableStateOf("") }
-
-        LaunchedEffect(Unit) {
-            coroutineScope.launch {
-                val result = viewModel.getMbtiInfo(mbtiTestResultInfo.mbti).first()
-                resultState.value = result?.description ?: "null 입니다"
-            }
-        }
-        // ---
-        Text(
-            text = "asd" + resultState +"asd",
-            fontSize = 14.sp,
-            lineHeight = 1.5.em,
-        )
         BarChart(
             maxHeight = defaultMaxHeight,
             values = mbtiTestResultInfo.scores,
