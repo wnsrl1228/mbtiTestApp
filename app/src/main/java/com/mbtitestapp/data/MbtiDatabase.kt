@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.mbtitestapp.data.question.Option
+import com.mbtitestapp.data.question.Question
+import com.mbtitestapp.data.question.QuestionWithOptions
 import com.mbtitestapp.data.result.MbtiInfoDao
 import com.mbtitestapp.data.result.MbtiInfo
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +14,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-@Database(entities = [MbtiInfo::class], version = 2, exportSchema = false)
+@Database(
+    entities = [MbtiInfo::class, Question::class, Option::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class MbtiDatabase : RoomDatabase() {
 
     abstract fun mbtiDao(): MbtiInfoDao

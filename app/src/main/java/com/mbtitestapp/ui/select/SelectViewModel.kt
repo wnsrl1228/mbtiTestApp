@@ -161,3 +161,8 @@ class SelectViewModel(private val mbtiInfoRepository: MbtiInfoRepository) : View
         )
     }
 }
+/**
+ * 여행가자!
+ * T 언제 어디로?
+ * F 너무 좋아
+ */
