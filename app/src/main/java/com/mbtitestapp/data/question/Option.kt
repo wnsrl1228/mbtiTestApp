@@ -7,7 +7,7 @@ import com.mbtitestapp.data.MbtiType
 @Entity(tableName = "option")
 data class Option(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val id: Long = 0,
     val questionId: Long,
     val optionText: String,
     val mbtiType: MbtiType

@@ -1,0 +1,156 @@
+// IE, SN, TF, PJ
+{
+  "1" : {
+    "questionText" : "코로나 격리 기간, 집 밖에 못 나가는 상황",
+    "mbtiCategory" : "IE"
+  },
+  "2" : {
+    "questionText" : "평소 카톡을 주로",
+    "mbtiCategory" : "IE"
+  },
+  "3" : {
+    "questionText" : "대화가 끊이지 않는 모임에 참석한 상황",
+    "mbtiCategory" : "IE"
+  },
+  "4" : {
+    "questionText" : "지금 애들이랑 있는데 너도 나와",
+    "mbtiCategory" : "IE"
+  },
+  "5" : {
+    "questionText" : "이번 주에 약속이 많았네",
+    "mbtiCategory" : "IE"
+  },
+  "6" : {
+    "questionText" : "문자 vs 전화",
+    "mbtiCategory" : "IE"
+  },
+  "7" : {
+    "questionText" : "자장면을 시켰는데 단무지가 안 온 상황",
+    "mbtiCategory" : "IE"
+  },
+  "8" : {
+    "questionText" : "야 OO이 생일파티에 같이 가야지.",
+    "mbtiCategory" : "IE"
+  },
+  "9" : {
+    "questionText" : "살면서 더 많이 들었던 말",
+    "mbtiCategory" : "IE"
+  },
+
+
+
+  "10" : {
+    "questionText" : "오늘은 일찍 퇴근하는 날, 집까지 어떻게 갈까?",
+    "mbtiCategory" : "SN"
+  },
+  "11" : {
+    "questionText" : "잠들기 전에",
+    "mbtiCategory" : "SN"
+  },
+  "12" : {
+    "questionText" : "오늘따라 라면을 맛있게 먹고 싶다.",
+    "mbtiCategory" : "SN"
+  },
+  "13" : {
+    "questionText" : "두 개의 프로젝트 중 하나를 선택해야 된다면",
+    "mbtiCategory" : "SN"
+  },
+  "14" : {
+    "questionText" : "좀비세상이 된다면 너는 총이랑 식량 중 뭘 고를 거야?",
+    "mbtiCategory" : "SN"
+  },
+  "15" : {
+    "questionText" : "내가 바퀴벌레로 변하면 어떻게 할거야?",
+    "mbtiCategory" : "SN"
+  },
+  "16" : {
+    "questionText" : "멜로디가 너무 좋은 노래, 하지만 가사가 별로일 경우",
+    "mbtiCategory" : "SN"
+  },
+  "17" : {
+    "questionText" : "복권을 구매하려고 한다.",
+    "mbtiCategory" : "SN"
+  },
+  "18" : {
+    "questionText" : "풍선이 하늘 높이 올라가고 있다.",
+    "mbtiCategory" : "SN"
+  },
+
+
+
+  "19" : {
+    "questionText" : "나 너무 속상한 일이 있어서 미용실가서 파마했어",
+    "mbtiCategory" : "TF"
+  },
+  "20" : {
+    "questionText" : "이번 여름에 같이 여행가자",
+    "mbtiCategory" : "TF"
+  },
+  "21" : {
+    "questionText" : "식당에서 친구들이 잠시 나가서 혼자 있는 상황",
+    "mbtiCategory" : "TF"
+  },
+  "22" : {
+    "questionText" : "영화 속에서 뜬금없이 나온 슬픈 장면, 하지만 얼마전 내가 겪은 상황과 비슷하다.",
+    "mbtiCategory" : "TF"
+  },
+  "23" : {
+    "questionText" : "이번에 여행 가는 거 내가 스케줄 다 짜놓았어.",
+    "mbtiCategory" : "TF"
+  },
+  "24" : {
+    "questionText" : "응모에 당첨돼서 미술 전시회 티켓을 얻었다.",
+    "mbtiCategory" : "TF"
+  },
+  "25" : {
+    "questionText" : "회사에서 신입사원이 실수를 했다.",
+    "mbtiCategory" : "TF"
+  },
+  "26" : {
+    "questionText" : "너 공부 안 하는 거 같은데, 성적이 엄청 좋다. 타고난 거야? 부럽다.",
+    "mbtiCategory" : "TF"
+  },
+  "27" : {
+    "questionText" : "너 잘 알지도 못하면서 왜 아는 척하니?",
+    "mbtiCategory" : "TF"
+  },
+
+
+
+  "28" : {
+    "questionText" : "내일 처음 가보는 장소에서 약속이 잡힌 상황",
+    "mbtiCategory" : "PJ"
+  },
+  "29" : {
+    "questionText" : "우리 내일 여행 일정은 바다에서 놀다가 밥 먹고 오는 거야",
+    "mbtiCategory" : "PJ"
+  },
+  "30" : {
+    "questionText" : "휴일에 친구가 갑자기 집에 치킨을 사들고 왔다.",
+    "mbtiCategory" : "PJ"
+  },
+  "31" : {
+    "questionText" : "나 20분 정도 늦을 거 같아. 정말 미안한데 돈 줄 테니까 가페에서 조금만 기다려 줄 수 있어?",
+    "mbtiCategory" : "PJ"
+  },
+  "32" : {
+    "questionText" : "일주일 뒤에 방학이 끝난다.",
+    "mbtiCategory" : "PJ"
+  },
+  "33" : {
+    "questionText" : "방 청소를",
+    "mbtiCategory" : "PJ"
+  },
+  "34" : {
+    "questionText" : "A음식을 먹기로 했는데, 친구가 A음식점 옆에 B음식은 어떠냐고 물어본다.",
+    "mbtiCategory" : "PJ"
+  },
+  "35" : {
+    "questionText" : "핸드폰에 다운 받은 앱들이",
+    "mbtiCategory" : "PJ"
+  },
+  "36" : {
+    "questionText" : "저녁 모임에 차를 가져가는 상황",
+    "mbtiCategory" : "PJ"
+  }
+}

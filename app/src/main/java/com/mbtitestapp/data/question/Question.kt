@@ -7,7 +7,7 @@ import com.mbtitestapp.data.MbtiCategory
 @Entity(tableName = "question")
 data class Question(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val id: Long = 0,
     val questionText: String,
     val mbtiCategory: MbtiCategory,
 )
