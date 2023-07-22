@@ -1,7 +1,5 @@
 package com.mbtitestapp.ui.select
 
-import android.app.Activity
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,11 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.mbtitestapp.R
-import com.mbtitestapp.data.QuestionData
 import com.mbtitestapp.navigation.NavigationDestination
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mbtitestapp.ui.AppViewModelProvider
 
 enum class RadioButtonOption {
     NONE,
@@ -59,7 +54,6 @@ object SelectDestination : NavigationDestination {
 @Composable
 fun SelectScreen(
     modifier: Modifier = Modifier,
-    options: List<QuestionData>,
     navigateToMbtiResult: () -> Unit,
     navigateToHome: () -> Unit,
     viewModel: SelectViewModel,
@@ -99,7 +93,6 @@ fun SelectScreen(
         modifier = modifier,
     ) { innerPadding ->
         SelectBody(
-            options = options,
             onMbtiResultButtonClick = navigateToMbtiResult,
             modifier = Modifier
                 .padding(innerPadding)
@@ -112,7 +105,6 @@ fun SelectScreen(
 
 @Composable
 fun SelectBody(
-    options: List<QuestionData>,
     modifier: Modifier = Modifier,
     onMbtiResultButtonClick: () -> Unit,
     viewModel: SelectViewModel,
@@ -137,10 +129,10 @@ fun SelectBody(
 
         Text(
             text = questionDataList[currentQuestionNum].questionText,
-            fontSize = 26.sp,
+            fontSize = 24.sp,
             textAlign = TextAlign.Center,
             lineHeight = 1.5.em,
-            modifier = Modifier.height(100.dp)
+            modifier = Modifier.height(120.dp)
         )
 
         QuestionOption(
@@ -170,7 +162,7 @@ fun SelectBody(
             }
 
 
-            if (currentQuestionNum == options.size - 1) {
+            if (currentQuestionNum == uiState.questionDataList.size - 1) {
                 Button(
                     onClick = onMbtiResultButtonClick,
                     enabled = uiState.selectedOptions[currentQuestionNum] != RadioButtonOption.NONE,
@@ -182,7 +174,7 @@ fun SelectBody(
                     onClick = {
                         currentQuestionNum++
                     },
-                    enabled = currentQuestionNum < options.size - 1 &&
+                    enabled = currentQuestionNum < uiState.questionDataList.size - 1 &&
                             uiState.selectedOptions[currentQuestionNum] != RadioButtonOption.NONE,
                 ) {
                     Text(text = "다음")
@@ -280,6 +272,6 @@ fun OtherRadioButton(
 @Composable
 fun GreetingPreview() {
     MbtiTestAppTheme {
-        SelectScreen(options = listOf(), navigateToMbtiResult = {}, navigateToHome = {}, viewModel = viewModel())
+        SelectScreen(navigateToMbtiResult = {}, navigateToHome = {}, viewModel = viewModel())
     }
 }

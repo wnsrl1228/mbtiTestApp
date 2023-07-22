@@ -6,7 +6,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.mbtitestapp.data.DataSource.questionDataList
 import com.mbtitestapp.ui.AppViewModelProvider
 import com.mbtitestapp.ui.home.HomeDestination
 import com.mbtitestapp.ui.home.HomeScreen
@@ -46,7 +45,6 @@ fun MbtiNavHost(
 
         composable(route = SelectDestination.route) {
             SelectScreen(
-                options = questionDataList,
                 navigateToMbtiResult = {navController.navigate(MbtiResultDestination.route)},
                 navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
                 viewModel = viewModel

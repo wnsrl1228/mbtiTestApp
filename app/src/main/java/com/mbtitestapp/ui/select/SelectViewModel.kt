@@ -1,12 +1,15 @@
 package com.mbtitestapp.ui.select
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.mbtitestapp.data.Mbti
 import com.mbtitestapp.data.MbtiCategory
-import com.mbtitestapp.data.MbtiOptionData
 import com.mbtitestapp.data.MbtiTestResultInfo
 import com.mbtitestapp.data.MbtiType
-import com.mbtitestapp.data.QuestionData
+import com.mbtitestapp.data.question.Option
+import com.mbtitestapp.data.question.Question
+import com.mbtitestapp.data.question.QuestionRepository
+import com.mbtitestapp.data.question.QuestionWithOptions
 import com.mbtitestapp.data.result.MbtiInfoRepository
 import com.mbtitestapp.data.result.MbtiInfo
 import kotlinx.coroutines.flow.Flow
@@ -14,13 +17,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class SelectUiState(
     val questionDataList: List<QuestionData> = emptyList(),
-    val selectedOptions: List<RadioButtonOption> = List(4) {RadioButtonOption.NONE},
+    val selectedOptions: List<RadioButtonOption> = List(36) {RadioButtonOption.NONE},
 )
 
-class SelectViewModel(private val mbtiInfoRepository: MbtiInfoRepository) : ViewModel() {
+class SelectViewModel(
+    private val mbtiInfoRepository: MbtiInfoRepository,
+    private val questionRepository: QuestionRepository
+) : ViewModel() {
 
 
     private val _uiState = MutableStateFlow(SelectUiState(questionDataList = questionDataList()))
@@ -73,7 +80,7 @@ class SelectViewModel(private val mbtiInfoRepository: MbtiInfoRepository) : View
         for (i:Int in questionDataList.indices) {
 
             // 점수 업데이트
-            when(questionDataList[i].type) {
+            when(questionDataList[i].mbtiCategory) {
                 MbtiCategory.IE -> updateMBTIScore(selectedOptions[i], questionDataList[i], mbtiScore)
                 MbtiCategory.TF -> updateMBTIScore(selectedOptions[i], questionDataList[i], mbtiScore)
                 MbtiCategory.SN -> updateMBTIScore(selectedOptions[i], questionDataList[i], mbtiScore)
@@ -137,32 +144,43 @@ class SelectViewModel(private val mbtiInfoRepository: MbtiInfoRepository) : View
      * TODO : 초기 데이터 생성, 추후 변경
      */
     private fun questionDataList(): List<QuestionData> {
-        return listOf(
-            QuestionData("나 너무 속상한 일이 있어서 미용실가서 파마했어",
-                MbtiCategory.TF,
-                MbtiOptionData("속상한데 왜 미용실을 가니", MbtiType.T),
-                MbtiOptionData("무슨일 있어?" , MbtiType.F)
-            ),
-            QuestionData("휴일에 밖에서 놀았더니 너무",
-                MbtiCategory.IE,
-                MbtiOptionData("충전된다", MbtiType.E),
-                MbtiOptionData("집에가서 쉬어야지", MbtiType.I)
-            ),
-            QuestionData("나는 모든 일을",
-                MbtiCategory.PJ,
-                MbtiOptionData("계획적으로", MbtiType.J),
-                MbtiOptionData("즉흥적으로", MbtiType.P)
-            ),
-            QuestionData("여행을 갔어",
-                MbtiCategory.SN,
-                MbtiOptionData("무조건 로컬음식", MbtiType.N),
-                MbtiOptionData("걍 내가 좋아하는 음식", MbtiType.S)
-            ),
-        )
+
+        val questionDataList: MutableList<QuestionData> = mutableListOf()
+        viewModelScope.launch {
+            val flowData: Flow<List<QuestionWithOptions>> = questionRepository.getQuestionWithOptionsStream()
+            flowData.collect {
+                it.forEach { questionWithOptions ->
+
+                    val option1: MbtiOptionData = questionWithOptions.options[0].toMbtiOptionData()
+                    val option2: MbtiOptionData = questionWithOptions.options[1].toMbtiOptionData()
+
+                    val questionData: QuestionData = questionWithOptions.question.toQuestionData(option1, option2)
+
+                    questionDataList.add(questionData)
+                }
+            }
+        }
+
+        return questionDataList
     }
 }
-/**
- * 여행가자!
- * T 언제 어디로?
- * F 너무 좋아
- */
+data class QuestionData (
+    val questionText: String,
+    val mbtiCategory: MbtiCategory,
+    val option1: MbtiOptionData,
+    val option2: MbtiOptionData
+)
+data class MbtiOptionData (
+    val optionText: String,
+    val mbtiType: MbtiType
+)
+fun Option.toMbtiOptionData(): MbtiOptionData = MbtiOptionData(
+    optionText = optionText,
+    mbtiType = mbtiType
+)
+fun Question.toQuestionData(option1: MbtiOptionData, option2: MbtiOptionData): QuestionData = QuestionData(
+    questionText = questionText,
+    mbtiCategory = mbtiCategory,
+    option1 = option1,
+    option2 = option2,
+)

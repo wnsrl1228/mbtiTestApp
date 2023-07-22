@@ -12,7 +12,7 @@ object AppViewModelProvider {
 
         // Initializer for HomeViewModel
         initializer {
-            SelectViewModel(mbtiApplication().container.mbtiInfoRepository)
+            SelectViewModel(mbtiApplication().container.mbtiInfoRepository, mbtiApplication().container.questionRepository)
         }
     }
 }
