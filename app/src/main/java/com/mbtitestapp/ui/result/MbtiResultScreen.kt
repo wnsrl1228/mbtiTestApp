@@ -1,5 +1,6 @@
 package com.mbtitestapp.ui.result
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,10 +29,13 @@ import com.mbtitestapp.ui.select.SelectViewModel
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -56,6 +60,35 @@ fun MbtiResultScreen (
     viewModel: SelectViewModel,
     navigateToHome: () -> Unit
 ) {
+
+    var showAlertDialog by remember { mutableStateOf(false) }    // 팝업 창을 표시할 컴포저블 UI
+    if (showAlertDialog) {
+        AlertDialog(
+            title = {
+                Text(text = "홈 화면으로 이동합니다.")
+            },
+            text = {
+                Text(text = "테스트 결과는 저장되지 않습니다.")
+            },
+            onDismissRequest = { showAlertDialog = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.resetSelectUiState()
+                    navigateToHome()
+                }) {
+                    Text(text = "확인")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAlertDialog = false }) {
+                    Text(text = "취소")
+                }
+            }
+        )
+    }
+    BackHandler(enabled = true) {
+        showAlertDialog = true
+    }
 
     Scaffold(
         modifier = modifier,
