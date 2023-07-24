@@ -13,6 +13,8 @@ import com.mbtitestapp.ui.menu.MbtiTestMenuDestination
 import com.mbtitestapp.ui.menu.MbtiTestMenuScreen
 import com.mbtitestapp.ui.result.MbtiResultDestination
 import com.mbtitestapp.ui.result.MbtiResultScreen
+import com.mbtitestapp.ui.result.ResultsByQuestionDestination
+import com.mbtitestapp.ui.result.ResultsByQuestionScreen
 import com.mbtitestapp.ui.select.SelectDestination
 import com.mbtitestapp.ui.select.SelectScreen
 import com.mbtitestapp.ui.select.SelectViewModel
@@ -54,7 +56,15 @@ fun MbtiNavHost(
         composable(route = MbtiResultDestination.route) {
             MbtiResultScreen(
                 viewModel = viewModel,
-                navigateToHome = {navController.popBackStack(HomeDestination.route, false)}
+                navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
+                naviagteToResultsByQuestion = {navController.navigate(ResultsByQuestionDestination.route)}
+            )
+        }
+
+        composable(route = ResultsByQuestionDestination.route) {
+            ResultsByQuestionScreen(
+                viewModel = viewModel,
+                navigateBack = {navController.popBackStack()},
             )
         }
 

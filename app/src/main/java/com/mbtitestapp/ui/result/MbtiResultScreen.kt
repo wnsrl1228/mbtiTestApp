@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.Dp
 import com.mbtitestapp.data.Mbti
 import com.mbtitestapp.data.MbtiTestResultInfo
 import com.mbtitestapp.data.result.MbtiInfo
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -58,7 +57,8 @@ object MbtiResultDestination : NavigationDestination {
 fun MbtiResultScreen (
     modifier: Modifier = Modifier,
     viewModel: SelectViewModel,
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    naviagteToResultsByQuestion: () -> Unit
 ) {
 
     var showAlertDialog by remember { mutableStateOf(false) }    // 팝업 창을 표시할 컴포저블 UI
@@ -96,6 +96,7 @@ fun MbtiResultScreen (
         MbtiResultBody(
             viewModel = viewModel,
             navigateToHome = navigateToHome,
+            naviagteToResultsByQuestion = naviagteToResultsByQuestion,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -106,6 +107,7 @@ fun MbtiResultScreen (
 fun MbtiResultBody(
     viewModel: SelectViewModel,
     navigateToHome: () -> Unit,
+    naviagteToResultsByQuestion: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -156,7 +158,7 @@ fun MbtiResultBody(
         )
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = naviagteToResultsByQuestion,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp)) {
@@ -332,8 +334,8 @@ private fun AxisLabels(
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun MbtiResultScreenPreview() {
     MbtiTestAppTheme {
-        MbtiResultScreen(viewModel = viewModel(), navigateToHome = {})
+        MbtiResultScreen(viewModel = viewModel(), navigateToHome = {}, naviagteToResultsByQuestion = {})
     }
 }
