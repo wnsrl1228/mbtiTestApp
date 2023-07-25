@@ -1,8 +1,10 @@
 package com.mbtitestapp.ui.result
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -97,27 +99,41 @@ fun ResultsByQuestionDetailBody(
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             lineHeight = 1.5.em,
-            modifier = Modifier.height(120.dp)
+            modifier = Modifier.height(105.dp)
         )
 
         ResultQuestionOption(
-            optionText1 = questionDataList[currentQuestionNum].option1.optionText,
-            optionText2 = questionDataList[currentQuestionNum].option2.optionText,
+            option1 = questionDataList[currentQuestionNum].option1,
+            option2 = questionDataList[currentQuestionNum].option2,
             selectedOption = uiState.selectedOptions[currentQuestionNum]
         )
     }
 }
 @Composable
 fun ResultQuestionOption(
-    optionText1: String,
-    optionText2: String,
+    option1: MbtiOptionData,
+    option2: MbtiOptionData,
     selectedOption: RadioButtonOption
 
 ) {
-    OptionRadioButton(
-        selected = selectedOption == RadioButtonOption.OPTION_1,
-        text = optionText1
-    )
+
+    Box(
+        modifier = Modifier.height(120.dp),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+
+        OptionRadioButton(
+            selected = selectedOption == RadioButtonOption.OPTION_1,
+            text = option1.optionText
+        )
+        Text(
+            text = option1.mbtiType.name,
+            modifier = Modifier.fillMaxWidth()
+                .align(Alignment.TopCenter),
+            textAlign = TextAlign.Center,
+            fontSize = 32.sp
+        )
+    }
 
     Text(
         text = "VS",
@@ -125,10 +141,26 @@ fun ResultQuestionOption(
         fontWeight = FontWeight.Bold
     )
 
-    OptionRadioButton(
-        selected = selectedOption == RadioButtonOption.OPTION_2,
-        text = optionText2
-    )
+    Box(
+        modifier = Modifier.height(120.dp),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+
+        OptionRadioButton(
+            selected = selectedOption == RadioButtonOption.OPTION_2,
+            text = option2.optionText
+        )
+
+        Text(
+            text = option2.mbtiType.name,
+            modifier = Modifier.fillMaxWidth()
+                .align(Alignment.TopCenter),
+            textAlign = TextAlign.Center,
+            fontSize = 32.sp
+        )
+    }
+
+
 
     OtherRadioButton(
         selected = selectedOption == RadioButtonOption.OTHER,
@@ -140,19 +172,30 @@ fun ResultQuestionOption(
 fun ResultsByQuestionDetailScreenPreview() {
     // 임의의 더미 데이터 생성
     val dummyQuestionDataList = listOf(
-        QuestionData("안녕1", MbtiCategory.PJ, MbtiOptionData("1번", MbtiType.E), MbtiOptionData("2번", MbtiType.E)),
-        QuestionData("안녕2", MbtiCategory.PJ, MbtiOptionData("1번", MbtiType.E), MbtiOptionData("2번", MbtiType.I)),
-        QuestionData("안녕2", MbtiCategory.PJ, MbtiOptionData("1번", MbtiType.F), MbtiOptionData("2번", MbtiType.T)),
-        QuestionData("안녕2", MbtiCategory.PJ, MbtiOptionData("1번", MbtiType.T), MbtiOptionData("2번", MbtiType.F)),
-        // 다른 항목들도 추가
+        QuestionData("영화 속에서 뜬금없이 나온 슬픈 장면, 하지만 얼마전 내가 겪은 상황과 비슷하다.", MbtiCategory.PJ, MbtiOptionData("나 20분 정도 늦을 거 같아. 정말 미안한데 돈 줄 테니까 가페에서 조금만 기다려 줄 수 있어?", MbtiType.E), MbtiOptionData("2번", MbtiType.E)),
     )
     val dummySelectedOptions = listOf(
-        RadioButtonOption.OPTION_2,RadioButtonOption.OPTION_2,RadioButtonOption.OPTION_2,
-        RadioButtonOption.OTHER
+        RadioButtonOption.OPTION_2,
     )
 
 
     MbtiTestAppTheme {
-        ResultsByQuestionDetailBody(SelectUiState(dummyQuestionDataList, dummySelectedOptions), 0)
+        Scaffold(
+            topBar = {
+                MbitTopAppBar(
+                    title = stringResource(MbtiTestMenuDestination.titleRes),
+                    canNavigateBack = true,
+                )
+            },
+        ) { innerPadding ->
+            ResultsByQuestionDetailBody(
+                uiState = SelectUiState(dummyQuestionDataList, dummySelectedOptions),
+                currentQuestionNum = 0,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center),
+            )
+        }
     }
 }
