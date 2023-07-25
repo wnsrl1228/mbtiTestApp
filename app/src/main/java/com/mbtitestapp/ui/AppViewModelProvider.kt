@@ -12,8 +12,12 @@ object AppViewModelProvider {
 
         // Initializer for HomeViewModel
         initializer {
-            SelectViewModel(mbtiApplication().container.mbtiInfoRepository, mbtiApplication().container.questionRepository)
+            SelectViewModel(
+                mbtiApplication().container.mbtiInfoRepository,
+                mbtiApplication().container.questionRepository
+            )
         }
+
     }
 }
 fun CreationExtras.mbtiApplication(): MbtiApplication =

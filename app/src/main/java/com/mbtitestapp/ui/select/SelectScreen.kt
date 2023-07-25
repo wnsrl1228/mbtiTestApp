@@ -219,7 +219,7 @@ fun QuestionOption(
 @Composable
 fun OptionRadioButton(
     selected: Boolean,
-    onOptionSelected: () -> Unit,
+    onOptionSelected: () -> Unit = {},
     text: String
 ) {
     Box(
@@ -246,7 +246,7 @@ fun OptionRadioButton(
 @Composable
 fun OtherRadioButton(
     selected: Boolean,
-    onOptionSelected: () -> Unit,
+    onOptionSelected: () -> Unit = {},
 ) {
     Box(
         Modifier

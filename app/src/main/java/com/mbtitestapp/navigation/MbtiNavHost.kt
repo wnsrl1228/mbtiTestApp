@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.mbtitestapp.ui.AppViewModelProvider
 import com.mbtitestapp.ui.home.HomeDestination
 import com.mbtitestapp.ui.home.HomeScreen
@@ -14,6 +16,8 @@ import com.mbtitestapp.ui.menu.MbtiTestMenuScreen
 import com.mbtitestapp.ui.result.MbtiResultDestination
 import com.mbtitestapp.ui.result.MbtiResultScreen
 import com.mbtitestapp.ui.result.ResultsByQuestionDestination
+import com.mbtitestapp.ui.result.ResultsByQuestionDetailDestination
+import com.mbtitestapp.ui.result.ResultsByQuestionDetailScreen
 import com.mbtitestapp.ui.result.ResultsByQuestionScreen
 import com.mbtitestapp.ui.select.SelectDestination
 import com.mbtitestapp.ui.select.SelectScreen
@@ -65,6 +69,20 @@ fun MbtiNavHost(
             ResultsByQuestionScreen(
                 viewModel = viewModel,
                 navigateBack = {navController.popBackStack()},
+                navigateToResultsByQuestionDetail = { navController.navigate("${ResultsByQuestionDetailDestination.route}/${it}") },
+            )
+        }
+
+        composable(
+            route = ResultsByQuestionDetailDestination.routeWithArgs,
+            arguments = listOf(navArgument(ResultsByQuestionDetailDestination.itemIdArg) {
+                type = NavType.IntType
+            })
+        ) {backStackEntry ->
+            ResultsByQuestionDetailScreen(
+                viewModel = viewModel,
+                navigateBack = {navController.popBackStack()},
+                navBackStackEntry = backStackEntry
             )
         }
 

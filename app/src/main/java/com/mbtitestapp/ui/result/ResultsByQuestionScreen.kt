@@ -42,7 +42,8 @@ object ResultsByQuestionDestination : NavigationDestination {
 fun ResultsByQuestionScreen(
     viewModel: SelectViewModel,
     modifier: Modifier = Modifier,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToResultsByQuestionDetail: (Int) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -55,6 +56,7 @@ fun ResultsByQuestionScreen(
     ) { innerPadding ->
         ResultsByQuestionBody(
             uiState = viewModel.uiState.collectAsState().value,
+            onItemClick = navigateToResultsByQuestionDetail,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -65,6 +67,7 @@ fun ResultsByQuestionScreen(
 @Composable
 fun ResultsByQuestionBody(
     uiState: SelectUiState,
+    onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -79,7 +82,7 @@ fun ResultsByQuestionBody(
                     .fillMaxWidth()
                     .padding(4.dp)
                     .clickable {
-
+                        onItemClick(index)
                     }
             
             ) {
@@ -128,6 +131,6 @@ fun ResultsByQuestionScreenPreview() {
 
 
     MbtiTestAppTheme {
-        ResultsByQuestionBody(SelectUiState(dummyQuestionDataList, dummySelectedOptions))
+        ResultsByQuestionBody(SelectUiState(dummyQuestionDataList, dummySelectedOptions), onItemClick = {})
     }
 }

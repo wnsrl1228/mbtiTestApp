@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 data class SelectUiState(
     val questionDataList: List<QuestionData> = emptyList(),
-    val selectedOptions: List<RadioButtonOption> = List(36) {RadioButtonOption.NONE},
+    val selectedOptions: List<RadioButtonOption> = List(2) {RadioButtonOption.NONE}, // TODO : 추후 변경 , 임시로 데이터 2개만 넣어줌
 )
 
 class SelectViewModel(
@@ -32,7 +32,6 @@ class SelectViewModel(
 
     private val _uiState = MutableStateFlow(SelectUiState(questionDataList = questionDataList()))
     val uiState: StateFlow<SelectUiState> = _uiState.asStateFlow()
-
 
     /**
      *  mbti 에 대한 결과정보
@@ -45,7 +44,7 @@ class SelectViewModel(
      * 질문지에서 현재 선택한 항목으로 데이터 변경
      */
     fun setCurrentSelectedOption(index: Int, option: RadioButtonOption) {
-        _uiState.update {currentState ->
+        _uiState.update { currentState ->
             val updatedOptions = currentState.selectedOptions.toMutableList()
             updatedOptions[index] = option
             currentState.copy(selectedOptions = updatedOptions)
@@ -152,12 +151,17 @@ class SelectViewModel(
             flowData.collect {
                 it.forEach { questionWithOptions ->
 
-                    val option1: MbtiOptionData = questionWithOptions.options[0].toMbtiOptionData()
-                    val option2: MbtiOptionData = questionWithOptions.options[1].toMbtiOptionData()
+                    if (questionDataList.size == 2) {
+                        // TODO : 추후 삭세 , 임시로 데이터 2개만 넣어줌
+                    } else {
+                        val option1: MbtiOptionData = questionWithOptions.options[0].toMbtiOptionData()
+                        val option2: MbtiOptionData = questionWithOptions.options[1].toMbtiOptionData()
 
-                    val questionData: QuestionData = questionWithOptions.question.toQuestionData(option1, option2)
+                        val questionData: QuestionData = questionWithOptions.question.toQuestionData(option1, option2)
 
-                    questionDataList.add(questionData)
+                        questionDataList.add(questionData)
+                    }
+
 
                 }
             }
