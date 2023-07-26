@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -98,25 +99,26 @@ fun SelectScreen(
         modifier = modifier,
     ) { innerPadding ->
         SelectBody(
+            uiState = viewModel.uiState.collectAsState().value,
+            onOptionSelected = viewModel.setCurrentSelectedOption,
             onMbtiResultButtonClick = navigateToMbtiResult,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center),
-            viewModel = viewModel
         )
     }
 }
 
 @Composable
 fun SelectBody(
-    modifier: Modifier = Modifier,
+    uiState: SelectUiState,
+    onOptionSelected: (Int, RadioButtonOption) -> Unit,
     onMbtiResultButtonClick: () -> Unit,
-    viewModel: SelectViewModel,
+    modifier: Modifier = Modifier,
 ) {
-
-    val uiState by viewModel.uiState.collectAsState()
     val questionDataList = uiState.questionDataList                // mbti 테스트 관련 데이터
+    val selectedOptions = uiState.selectedOptions                  // mbti 테스트 관련 데이터
     var currentQuestionNum by remember { mutableStateOf(0) } // 현재 선택된 버튼
 
     Column(
@@ -141,11 +143,11 @@ fun SelectBody(
         )
 
         QuestionOption(
-            viewModel = viewModel,
+            onOptionSelected = onOptionSelected,
             optionText1 = questionDataList[currentQuestionNum].option1.optionText,
             optionText2 = questionDataList[currentQuestionNum].option2.optionText,
             currentQuestionNum = currentQuestionNum,
-            selectedOption = uiState.selectedOptions[currentQuestionNum]
+            selectedOption = selectedOptions[currentQuestionNum]
         )
 
         Row(
@@ -154,23 +156,20 @@ fun SelectBody(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Button(
-                onClick = {
-                    /**
-                     * - 이전 버튼 클릭시
-                     * 1. 현재 질문지 숫자 1 감소
-                     */
-                    currentQuestionNum-- },
+                onClick = { currentQuestionNum-- },
                 enabled = currentQuestionNum > 0,
-                modifier = Modifier.width(100.dp)
+                modifier = Modifier.weight(1f)
             ) {
                 Text(text = "이전")
             }
 
+            Spacer(modifier = Modifier.weight(1f))
 
-            if (currentQuestionNum == uiState.questionDataList.size - 1) {
+            if (currentQuestionNum == questionDataList.size - 1) {
                 Button(
                     onClick = onMbtiResultButtonClick,
-                    enabled = uiState.selectedOptions[currentQuestionNum] != RadioButtonOption.NONE,
+                    enabled = selectedOptions[currentQuestionNum] != RadioButtonOption.NONE,
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(text = "결과 보기")
                 }
@@ -179,8 +178,9 @@ fun SelectBody(
                     onClick = {
                         currentQuestionNum++
                     },
-                    enabled = currentQuestionNum < uiState.questionDataList.size - 1 &&
-                            uiState.selectedOptions[currentQuestionNum] != RadioButtonOption.NONE,
+                    enabled = currentQuestionNum < questionDataList.size - 1 &&
+                            selectedOptions[currentQuestionNum] != RadioButtonOption.NONE,
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(text = "다음")
                 }
@@ -191,7 +191,7 @@ fun SelectBody(
 }
 @Composable
 fun QuestionOption(
-    viewModel: SelectViewModel,
+    onOptionSelected: (Int, RadioButtonOption) -> Unit,
     optionText1: String,
     optionText2: String,
     currentQuestionNum: Int,
@@ -200,7 +200,7 @@ fun QuestionOption(
 ) {
     OptionRadioButton(
         selected = selectedOption == RadioButtonOption.OPTION_1,
-        onOptionSelected = {viewModel.setCurrentSelectedOption(currentQuestionNum, RadioButtonOption.OPTION_1)},
+        onOptionSelected = {onOptionSelected(currentQuestionNum, RadioButtonOption.OPTION_1)},
         text = optionText1,
         color = colorResource(R.color.option1_button),
         selectedColor = colorResource(R.color.selected_option1_button),
@@ -214,7 +214,7 @@ fun QuestionOption(
 
     OptionRadioButton(
         selected = selectedOption == RadioButtonOption.OPTION_2,
-        onOptionSelected = {viewModel.setCurrentSelectedOption(currentQuestionNum, RadioButtonOption.OPTION_2)},
+        onOptionSelected = {onOptionSelected(currentQuestionNum, RadioButtonOption.OPTION_2)},
         text = optionText2,
         color = colorResource(R.color.option2_button),
         selectedColor = colorResource(R.color.selected_option2_button),
@@ -222,7 +222,7 @@ fun QuestionOption(
 
     OtherRadioButton(
         selected = selectedOption == RadioButtonOption.OTHER,
-        onOptionSelected = {viewModel.setCurrentSelectedOption(currentQuestionNum, RadioButtonOption.OTHER)}
+        onOptionSelected = {onOptionSelected(currentQuestionNum, RadioButtonOption.OTHER)}
     )
 }
 

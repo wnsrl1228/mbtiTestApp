@@ -43,14 +43,13 @@ class SelectViewModel(
     /**
      * 질문지에서 현재 선택한 항목으로 데이터 변경
      */
-    fun setCurrentSelectedOption(index: Int, option: RadioButtonOption) {
+    val setCurrentSelectedOption: (Int, RadioButtonOption) -> Unit = { index, option ->
         _uiState.update { currentState ->
             val updatedOptions = currentState.selectedOptions.toMutableList()
             updatedOptions[index] = option
             currentState.copy(selectedOptions = updatedOptions)
         }
     }
-
 
     /**
      * 초기화
