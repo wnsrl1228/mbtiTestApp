@@ -64,7 +64,7 @@ fun MbtiTestAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = myTypography,
         content = content
     )
 }

@@ -7,4 +7,14 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="menu_button">#FF0111FF</color>
+    <color name="option1_button">#FFC9FAA5</color>
+    <color name="selected_option1_button">#FF95BA7B</color>
+    <color name="option2_button">#FF91FAE4</color>
+    <color name="selected_option2_button">#FF6CBAA9</color>
+
+    <color name="a">#FF637BFF</color>
+    <color name="b">#FF81C5E6</color>
+    <color name="c">#FF78E390</color>
+
 </resources>

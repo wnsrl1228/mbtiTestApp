@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.mbtitestapp.MbitTopAppBar
 import com.mbtitestapp.R
 import com.mbtitestapp.navigation.NavigationDestination
+import com.mbtitestapp.ui.home.MenuButton
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
 
 object MbtiTestMenuDestination : NavigationDestination {
@@ -73,14 +72,28 @@ fun MbtiTestMenuBody(
             modifier = Modifier.size(300.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
+
+        MenuButton(
             onClick = onMbtiTestStartButtonClick,
+            text = "테스트 시작하기"
+        )
+
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp)
-
+                .padding(horizontal = 32.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "테스트 시작하기")
+            MenuButton(
+                text = "I E",
+                onClick = {},
+                modifier = Modifier.weight(1f),
+            )
+            MenuButton(
+                text = "S N",
+                onClick = {},
+                modifier = Modifier.weight(1f),
+            )
         }
 
         Row(
@@ -89,40 +102,16 @@ fun MbtiTestMenuBody(
                 .padding(horizontal = 32.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Button(
+            MenuButton(
+                text = "T F",
+                onClick = {},
                 modifier = Modifier.weight(1f),
-                onClick = {  },
-            ) {
-                Text(text = "I E")
-            }
-            Spacer(modifier = Modifier.weight(0.2f))
-            Button(
+            )
+            MenuButton(
+                text = "P J",
+                onClick = {},
                 modifier = Modifier.weight(1f),
-                onClick = {  },
-            ) {
-                Text(text = "S N")
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = {  },
-            ) {
-                Text(text = "T F")
-            }
-            Spacer(modifier = Modifier.weight(0.2f))
-            Button(
-                modifier = Modifier.weight(1f),
-                onClick = {  },
-            ) {
-                Text(text = "P J")
-            }
+            )
         }
 
 

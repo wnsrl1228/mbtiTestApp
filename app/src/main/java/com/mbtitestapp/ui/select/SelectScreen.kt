@@ -3,6 +3,7 @@ package com.mbtitestapp.ui.select
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,9 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -28,16 +29,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.mbtitestapp.R
 import com.mbtitestapp.navigation.NavigationDestination
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 enum class RadioButtonOption {
     NONE,
@@ -196,7 +201,9 @@ fun QuestionOption(
     OptionRadioButton(
         selected = selectedOption == RadioButtonOption.OPTION_1,
         onOptionSelected = {viewModel.setCurrentSelectedOption(currentQuestionNum, RadioButtonOption.OPTION_1)},
-        text = optionText1
+        text = optionText1,
+        color = colorResource(R.color.option1_button),
+        selectedColor = colorResource(R.color.selected_option1_button),
     )
 
     Text(
@@ -208,7 +215,9 @@ fun QuestionOption(
     OptionRadioButton(
         selected = selectedOption == RadioButtonOption.OPTION_2,
         onOptionSelected = {viewModel.setCurrentSelectedOption(currentQuestionNum, RadioButtonOption.OPTION_2)},
-        text = optionText2
+        text = optionText2,
+        color = colorResource(R.color.option2_button),
+        selectedColor = colorResource(R.color.selected_option2_button),
     )
 
     OtherRadioButton(
@@ -216,28 +225,66 @@ fun QuestionOption(
         onOptionSelected = {viewModel.setCurrentSelectedOption(currentQuestionNum, RadioButtonOption.OTHER)}
     )
 }
+
 @Composable
 fun OptionRadioButton(
     selected: Boolean,
     onOptionSelected: () -> Unit = {},
-    text: String
+    text: String,
+    color : Color,
+    selectedColor : Color,
+    height: Dp = 110.dp,
+    fontSize: TextUnit = 21.sp
 ) {
     Box(
         Modifier
-            .height(100.dp)
+            .height(height)
             .fillMaxWidth()
-            .background(if (selected) Color.DarkGray else Color.LightGray)
-            .clickable { onOptionSelected() }
+            .background(
+                selectedColor,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .graphicsLayer( // 버튼이 눌리는 효과
+                translationY = if (selected) 0f else -30f
+            )
+//            .layout { measurable, constraints -> // graphicsLayer랑 동일한 기능을 해서 주석처리
+//                val placeable = measurable.measure(constraints)
+//                layout(placeable.width, placeable.height) {
+//                    if (selected) {
+//                        placeable.placeRelative(0, 0)
+//                    } else {
+//                        placeable.placeRelative(0, -30)
+//                    }
+//                }
+//            }
+            .clickable(   // 클릭 이벤트 제거
+                onClick = { onOptionSelected() },
+                interactionSource = MutableInteractionSource(),
+                indication = null
+            )
+
     ) {
         Box(
             Modifier
-                .align(Alignment.Center)
-                .background(Color.Black)
-                .sizeIn(0.dp)
+                .height(height)
+                .fillMaxWidth()
+                .background(
+                    if (selected) selectedColor
+                    else color,
+                    shape = RoundedCornerShape(16.dp)
+                )
         ) {
             Text(
                 text = text,
-                modifier = Modifier.background(color = Color.White)
+                fontSize = fontSize,
+                color =  if (selected) Color.White else Color.Black,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = dimensionResource(R.dimen.padding_medium))
+                    .background(
+                        if (selected) selectedColor
+                        else color
+                    )
             )
         }
     }
@@ -248,30 +295,21 @@ fun OtherRadioButton(
     selected: Boolean,
     onOptionSelected: () -> Unit = {},
 ) {
-    Box(
-        Modifier
-            .height(50.dp)
-            .fillMaxWidth()
-            .background(if (selected) Color.DarkGray else Color.LightGray)
-            .clickable { onOptionSelected() }
-    ) {
-        Box(
-            Modifier
-                .align(Alignment.Center)
-                .background(Color.Black)
-                .sizeIn(0.dp)
-        ) {
-            Text(
-                text = "둘다 아닌거 같아요.",
-                modifier = Modifier.background(color = Color.White)
-            )
-        }
-    }
+
+    OptionRadioButton(
+        selected = selected,
+        onOptionSelected = onOptionSelected,
+        text = "둘 다 아닌거 같아요.",
+        color =  Color.LightGray,
+        selectedColor = Color.Gray,
+        height = 50.dp,
+        fontSize = 18.sp
+    )
 }
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     MbtiTestAppTheme {
-        SelectScreen(navigateToMbtiResult = {}, navigateToHome = {}, viewModel = viewModel())
     }
 }
