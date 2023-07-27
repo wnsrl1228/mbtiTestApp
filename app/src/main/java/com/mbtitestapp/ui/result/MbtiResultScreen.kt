@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.Dp
 import com.mbtitestapp.data.Mbti
 import com.mbtitestapp.data.MbtiTestResultInfo
 import com.mbtitestapp.data.result.MbtiInfo
+import com.mbtitestapp.ui.home.MenuButton
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -157,23 +158,18 @@ fun MbtiResultBody(
             mbtiResult = mbtiTestResultInfo.mbti
         )
 
-        Button(
+        MenuButton(
             onClick = naviagteToResultsByQuestion,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)) {
-            Text(text = "질문별 결과보기")
-        }
-        Button(
+            text = "질문별 결과보기",
+        )
+        MenuButton(
             onClick = {
                 viewModel.resetSelectUiState()
                 navigateToHome()
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp)) {
-            Text(text = "홈으로 돌아가기")
-        }
+            text = "홈으로 돌아가기",
+        )
+
         Spacer(modifier = Modifier.padding(bottom = 30.dp))
     }
 }

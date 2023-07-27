@@ -13,8 +13,10 @@
     <color name="option2_button">#FF91FAE4</color>
     <color name="selected_option2_button">#FF6CBAA9</color>
 
-    <color name="a">#FF637BFF</color>
-    <color name="b">#FF81C5E6</color>
-    <color name="c">#FF78E390</color>
+    <color name="page_navigation_button">#FF6A4EFF</color>
+
+<!--    <color name="aa">#FF637BFF</color>-->
+<!--    <color name="b">#FF81C5E6</color>-->
+<!--    <color name="c">#FF78E390</color>-->
 
 </resources>

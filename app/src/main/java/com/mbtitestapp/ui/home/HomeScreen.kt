@@ -86,10 +86,10 @@ fun HomeBody(
             text = "테스트 시작하기"
         )
 
-        MenuButton(
-            onClick = { /*TODO*/ },
-            text = "제한시간 테스트 시작하기"
-        )
+//        MenuButton(
+//            onClick = { /*TODO*/ },
+//            text = "제한시간 테스트 시작하기"
+//        )
 
         MenuButton(
             onClick = { /*TODO*/ },

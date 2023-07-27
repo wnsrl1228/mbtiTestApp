@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 data class SelectUiState(
     val questionDataList: List<QuestionData> = emptyList(),
-    val selectedOptions: List<RadioButtonOption> = List(36) {RadioButtonOption.NONE}, // TODO : 추후 변경 , 임시로 데이터 2개만 넣어줌
+    val selectedOptions: List<RadioButtonOption> = List(2) {RadioButtonOption.NONE}, // TODO : 추후 변경 , 임시로 데이터 2개만 넣어줌
 )
 
 class SelectViewModel(
@@ -150,12 +150,18 @@ class SelectViewModel(
             flowData.collect {
                 it.forEach { questionWithOptions ->
 
-                    val option1: MbtiOptionData = questionWithOptions.options[0].toMbtiOptionData()
-                    val option2: MbtiOptionData = questionWithOptions.options[1].toMbtiOptionData()
+                    // 임시
+                    if (questionDataList.size == 2) {
 
-                    val questionData: QuestionData = questionWithOptions.question.toQuestionData(option1, option2)
+                    } else {
+                        val option1: MbtiOptionData = questionWithOptions.options[0].toMbtiOptionData()
+                        val option2: MbtiOptionData = questionWithOptions.options[1].toMbtiOptionData()
 
-                    questionDataList.add(questionData)
+                        val questionData: QuestionData = questionWithOptions.question.toQuestionData(option1, option2)
+
+                        questionDataList.add(questionData)
+                    }
+
                 }
             }
         }
