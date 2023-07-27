@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,12 +20,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mbtitestapp.R
 import com.mbtitestapp.navigation.NavigationDestination
 import com.mbtitestapp.ui.select.SelectViewModel
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
@@ -40,8 +38,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import com.mbtitestapp.data.Mbti
 import com.mbtitestapp.data.MbtiTestResultInfo
 import com.mbtitestapp.data.result.MbtiInfo
@@ -91,13 +94,28 @@ fun MbtiResultScreen (
         showAlertDialog = true
     }
 
+    val mbtiTestResultInfo: MbtiTestResultInfo = viewModel.getMbtiTestResultInfo()
+    val mbtiInfo = remember { mutableStateOf<MbtiInfo?>(null) }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            mbtiInfo.value = viewModel.getMbtiInfo(mbtiTestResultInfo.mbti).first()
+        }
+    }
+
     Scaffold(
         modifier = modifier,
     ) { innerPadding ->
         MbtiResultBody(
-            viewModel = viewModel,
-            navigateToHome = navigateToHome,
+            navigateToHome = {
+                viewModel.resetSelectUiState()
+                navigateToHome()
+            },
             naviagteToResultsByQuestion = naviagteToResultsByQuestion,
+            mbtiTestResultInfo = mbtiTestResultInfo,
+            mbtiInfo = mbtiInfo.value,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -106,23 +124,12 @@ fun MbtiResultScreen (
 }
 @Composable
 fun MbtiResultBody(
-    viewModel: SelectViewModel,
     navigateToHome: () -> Unit,
     naviagteToResultsByQuestion: () -> Unit,
+    mbtiTestResultInfo: MbtiTestResultInfo,
+    mbtiInfo: MbtiInfo?,
     modifier: Modifier = Modifier,
 ) {
-
-    val uiState by viewModel.uiState.collectAsState()
-    val mbtiTestResultInfo: MbtiTestResultInfo = viewModel.getMbtiTestResultInfo()
-
-    val coroutineScope = rememberCoroutineScope()
-    val mbtiInfo = remember { mutableStateOf<MbtiInfo?>(null) }
-
-    LaunchedEffect(Unit) {
-        coroutineScope.launch {
-            mbtiInfo.value = viewModel.getMbtiInfo(mbtiTestResultInfo.mbti).first()
-        }
-    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -132,14 +139,14 @@ fun MbtiResultBody(
             .verticalScroll(rememberScrollState()), // 스크롤 https://developer.android.com/jetpack/compose/gestures?hl=ko#scrolling
     ) {
         Text(
-            text = "결과",
+            text = "<결과>",
             fontSize = 42.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 64.dp)
         )
 
         Text(
-            text = mbtiTestResultInfo.mbti.name + "\n" + mbtiInfo.value?.name,
+            text = mbtiTestResultInfo.mbti.name + "\n" + mbtiInfo?.name,
             fontSize = 26.sp,
             textAlign = TextAlign.Center,
             lineHeight = 1.5.em,
@@ -147,7 +154,7 @@ fun MbtiResultBody(
         )
 
         Text(
-            text = mbtiInfo.value?.detailedDesc ?: "",
+            text = mbtiInfo?.detailedDesc ?: "",
             fontSize = 16.sp,
             lineHeight = 1.5.em,
         )
@@ -163,10 +170,7 @@ fun MbtiResultBody(
             text = "질문별 결과보기",
         )
         MenuButton(
-            onClick = {
-                viewModel.resetSelectUiState()
-                navigateToHome()
-            },
+            onClick = navigateToHome,
             text = "홈으로 돌아가기",
         )
 
@@ -188,9 +192,9 @@ internal fun BarChart(
 
 //    assert(values.isNotEmpty()) { "Input values are empty" }
 
-    val borderColor = Color.Red
+    val borderColor = Color.DarkGray
     val density = LocalDensity.current
-    val strokeWidth = with(density) { 2.dp.toPx() }
+    val strokeWidth = with(density) { 1.dp.toPx() }
 
     Column(
         modifier = Modifier
@@ -238,14 +242,17 @@ internal fun BarChart(
 
                     val ESTJ = listOf("E", "S", "T", "J")
                     val INFP = listOf("I", "N", "F", "P")
-                    Text(
+                    MbtiText(
                         text = ESTJ[index],
-                        modifier = Modifier.align(Alignment.CenterStart)
+                        modifier = Modifier.align(Alignment.CenterStart),
+                        color = colorResource(R.color.bar_estj)
                     )
-                    Text(
+                    MbtiText(
                         text = INFP[index],
-                        modifier = Modifier.align(Alignment.CenterEnd)
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        colorResource(R.color.bar_infp)
                     )
+
                 }
             }
         }
@@ -256,6 +263,28 @@ internal fun BarChart(
 
 }
 
+@Composable
+fun MbtiText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color,
+    fontSize: TextUnit = 32.sp
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        fontSize = fontSize,
+        fontWeight = FontWeight.Bold,
+        color = color,
+        style = TextStyle(
+            shadow = Shadow(
+                color = Color.Black,
+                offset = Offset(5f, 0f),
+                blurRadius = 0.5f
+            )
+        )
+    )
+}
 /**
  * 차트의 bar에 대한 컴포저블
  */
@@ -268,7 +297,7 @@ private fun Bar(
 ) {
 
     val isESJT: Boolean = mbtiResult.name[index] in listOf('E', 'S', 'T', 'J')
-
+    val color = if (isESJT) colorResource(R.color.bar_estj) else colorResource(R.color.bar_infp)
     BoxWithConstraints {
 
         val barMaxWidth = (this@BoxWithConstraints.maxWidth - 40.dp) / 2  // 바 길이(폰 크기마다 다름)
@@ -291,7 +320,8 @@ private fun Bar(
                     .padding(vertical = 10.dp)
                     .height(50.dp)
                     .width(barWidth)  // 막대 가로 길이 = mbti 점수
-                    .background(Color.Magenta)
+                    .background(color)
+                    .border(width = 1.dp, color = Color.Black)
 
             )
             /**
@@ -300,9 +330,13 @@ private fun Bar(
              */
             Text(
                 text = score.toString(),
-                modifier = Modifier.align(
-                    if (isESJT) Alignment.CenterStart else Alignment.CenterEnd
-                )
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(
+                        if (isESJT) Alignment.CenterStart else Alignment.CenterEnd
+                    )
+                    .padding(start = if (isESJT) 2.dp else 0.dp, end = if (isESJT) 0.dp else 2.dp)
             )
         }
     }
@@ -320,10 +354,16 @@ private fun AxisLabels(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp)
+            .padding(
+                horizontal = dimensionResource(R.dimen.padding_small),
+                vertical = dimensionResource(R.dimen.padding_extra_small)
+            )
     ) {
         texts.forEach { text ->
-            Text(text = text)
+            Text(
+                text = text,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
@@ -331,7 +371,23 @@ private fun AxisLabels(
 @Preview(showBackground = true)
 @Composable
 fun MbtiResultScreenPreview() {
+
+
+
+    val mbtiInfo = MbtiInfo(Mbti.ENFJ,"친절하고 활동적인 교양가", "타인의 성장을 돕고 사회적인 환경을 조성하는 리더십을 가지고 있습니다.",
+    "ENFJ 유형은 친절하고 활동적인 교양가로, 타인의 성장을 돕고 사회적인 환경을 조성하는 리더십을 가지고 있습니다.")
     MbtiTestAppTheme {
-        MbtiResultScreen(viewModel = viewModel(), navigateToHome = {}, naviagteToResultsByQuestion = {})
+        Scaffold(
+        ) { innerPadding ->
+            MbtiResultBody(
+                navigateToHome = {}, naviagteToResultsByQuestion = {},
+                mbtiTestResultInfo = MbtiTestResultInfo(listOf(27,20,3,20), Mbti.ENFJ),
+                mbtiInfo =  mbtiInfo,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+            )
+        }
+
     }
 }

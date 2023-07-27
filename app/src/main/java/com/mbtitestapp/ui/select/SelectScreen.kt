@@ -350,7 +350,7 @@ fun OtherRadioButton(
         onOptionSelected = onOptionSelected,
         text = "둘 다 아닌거 같아요.",
         color =  Color.LightGray,
-        selectedColor = Color.Gray,
+        selectedColor = colorResource(R.color.selected_other_button),
         height = 50.dp,
         fontSize = 18.sp
     )

@@ -67,7 +67,7 @@ fun MbtiTestMenuBody(
         modifier = modifier,
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
+            painter = painterResource(id = R.drawable.mbti_logo_big),
             contentDescription = null,
             modifier = Modifier.size(300.dp)
         )

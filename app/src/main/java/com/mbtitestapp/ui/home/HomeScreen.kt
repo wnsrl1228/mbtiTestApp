@@ -67,7 +67,7 @@ fun HomeScreen(
 @Composable
 fun HomeBody(
     onMbtiTestButtonClick: () -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -75,8 +75,8 @@ fun HomeBody(
         modifier = modifier,
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = null,
+            painter = painterResource(id = R.drawable.mbti_logo_big),
+            contentDescription = "logo",
             modifier = Modifier.size(300.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -131,6 +131,6 @@ fun MenuButton(
 @Composable
 fun GreetingPreview() {
     MbtiTestAppTheme {
-        MenuButton({}, "안녕")
+        HomeBody(onMbtiTestButtonClick = {} )
     }
 }

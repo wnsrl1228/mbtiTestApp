@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -14,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -117,7 +117,14 @@ fun ResultQuestionOption(
     selectedOption: RadioButtonOption
 
 ) {
-
+    val option1Color = when (option1.mbtiType.name) {
+        "E", "S", "T", "J" -> colorResource(R.color.bar_estj)
+        else -> colorResource(R.color.bar_infp)
+    }
+    val option2Color = when (option2.mbtiType.name) {
+        "E", "S", "T", "J" -> colorResource(R.color.bar_estj)
+        else -> colorResource(R.color.bar_infp)
+    }
     Box(
         modifier = Modifier.height(120.dp),
         contentAlignment = Alignment.BottomCenter
@@ -130,12 +137,18 @@ fun ResultQuestionOption(
             selectedColor = colorResource(R.color.selected_option1_button),
 
         )
-        Text(
+
+        MbtiText(
             text = option1.mbtiType.name,
-            modifier = Modifier.fillMaxWidth()
-                .align(Alignment.TopCenter),
-            textAlign = TextAlign.Center,
-            fontSize = 32.sp
+            fontSize = 48.sp,
+            color = option1Color,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .graphicsLayer(
+                    translationY = -100f,
+                    translationX = 20f,
+                    rotationZ = 10f
+                )
         )
     }
 
@@ -157,12 +170,17 @@ fun ResultQuestionOption(
             selectedColor = colorResource(R.color.selected_option2_button),
         )
 
-        Text(
+        MbtiText(
             text = option2.mbtiType.name,
-            modifier = Modifier.fillMaxWidth()
-                .align(Alignment.TopCenter),
-            textAlign = TextAlign.Center,
-            fontSize = 32.sp
+            fontSize = 48.sp,
+            color = option2Color,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .graphicsLayer(
+                    translationY = -105f,
+                    translationX = 20f,
+                    rotationZ = 10f
+                )
         )
     }
 
@@ -178,7 +196,12 @@ fun ResultQuestionOption(
 fun ResultsByQuestionDetailScreenPreview() {
     // 임의의 더미 데이터 생성
     val dummyQuestionDataList = listOf(
-        QuestionData("영화 속에서 뜬금없이 나온 슬픈 장면, 하지만 얼마전 내가 겪은 상황과 비슷하다.", MbtiCategory.PJ, MbtiOptionData("나 20분 정도 늦을 거 같아. 정말 미안한데 돈 줄 테니까 가페에서 조금만 기다려 줄 수 있어?", MbtiType.E), MbtiOptionData("2번", MbtiType.E)),
+        QuestionData(
+            "영화 속에서 뜬금없이 나온 슬픈 장면, 하지만 얼마전 내가 겪은 상황과 비슷하다.",
+            MbtiCategory.PJ,
+            MbtiOptionData("나 20분 정도 늦을 거 같아. 정말 미안한데 돈 줄 테니까 가페에서 조금만 기다려 줄 수 있어?", MbtiType.E),
+            MbtiOptionData("2번", MbtiType.I)
+        ),
     )
     val dummySelectedOptions = listOf(
         RadioButtonOption.OPTION_2,
