@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mbtitestapp.MbitTopAppBar
 import com.mbtitestapp.R
+import com.mbtitestapp.data.MbtiCategory
 import com.mbtitestapp.navigation.NavigationDestination
 import com.mbtitestapp.ui.home.MenuButton
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
@@ -34,7 +35,7 @@ object MbtiTestMenuDestination : NavigationDestination {
 fun MbtiTestMenuScreen(
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
-    navigateToSelect: () -> Unit
+    navigateToSelect: (String) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -59,7 +60,7 @@ fun MbtiTestMenuScreen(
 @Composable
 fun MbtiTestMenuBody(
     modifier: Modifier,
-    onMbtiTestStartButtonClick: () -> Unit,
+    onMbtiTestStartButtonClick: (String) -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -74,7 +75,7 @@ fun MbtiTestMenuBody(
         Spacer(modifier = Modifier.height(16.dp))
 
         MenuButton(
-            onClick = onMbtiTestStartButtonClick,
+            onClick = {onMbtiTestStartButtonClick(MbtiCategory.ALL.name)},
             text = "테스트 시작하기"
         )
 
@@ -86,12 +87,12 @@ fun MbtiTestMenuBody(
         ) {
             MenuButton(
                 text = "I E",
-                onClick = {},
+                onClick = {onMbtiTestStartButtonClick(MbtiCategory.IE.name)},
                 modifier = Modifier.weight(1f),
             )
             MenuButton(
                 text = "S N",
-                onClick = {},
+                onClick = {onMbtiTestStartButtonClick(MbtiCategory.SN.name)},
                 modifier = Modifier.weight(1f),
             )
         }
@@ -104,12 +105,12 @@ fun MbtiTestMenuBody(
         ) {
             MenuButton(
                 text = "T F",
-                onClick = {},
+                onClick = {onMbtiTestStartButtonClick(MbtiCategory.TF.name)},
                 modifier = Modifier.weight(1f),
             )
             MenuButton(
                 text = "P J",
-                onClick = {},
+                onClick = {onMbtiTestStartButtonClick(MbtiCategory.PJ.name)},
                 modifier = Modifier.weight(1f),
             )
         }

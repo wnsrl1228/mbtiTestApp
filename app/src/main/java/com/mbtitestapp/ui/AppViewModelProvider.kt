@@ -1,6 +1,7 @@
 package com.mbtitestapp.ui
 
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -13,6 +14,7 @@ object AppViewModelProvider {
         // Initializer for HomeViewModel
         initializer {
             SelectViewModel(
+                this.createSavedStateHandle(),
                 mbtiApplication().container.mbtiInfoRepository,
                 mbtiApplication().container.questionRepository
             )

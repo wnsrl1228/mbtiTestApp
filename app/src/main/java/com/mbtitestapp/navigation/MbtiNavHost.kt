@@ -29,7 +29,7 @@ fun MbtiNavHost(
     modifier: Modifier = Modifier,
 ) {
     // SelectViewModel를 mbtiTest화면과 결과화면에서 공유하여 사용
-    val viewModel: SelectViewModel = viewModel(factory = AppViewModelProvider.Factory)
+//    val viewModel: SelectViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     NavHost(
         navController = navController,
@@ -45,46 +45,51 @@ fun MbtiNavHost(
         composable(route = MbtiTestMenuDestination.route) {
             MbtiTestMenuScreen(
                 navigateBack = {navController.popBackStack()},
-                navigateToSelect = {navController.navigate(SelectDestination.route)}
-            )
-        }
-
-        composable(route = SelectDestination.route) {
-            SelectScreen(
-                navigateToMbtiResult = {navController.navigate(MbtiResultDestination.route)},
-                navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
-                viewModel = viewModel
-            )
-        }
-
-        composable(route = MbtiResultDestination.route) {
-            MbtiResultScreen(
-                viewModel = viewModel,
-                navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
-                naviagteToResultsByQuestion = {navController.navigate(ResultsByQuestionDestination.route)}
-            )
-        }
-
-        composable(route = ResultsByQuestionDestination.route) {
-            ResultsByQuestionScreen(
-                viewModel = viewModel,
-                navigateBack = {navController.popBackStack()},
-                navigateToResultsByQuestionDetail = { navController.navigate("${ResultsByQuestionDetailDestination.route}/${it}") },
+                navigateToSelect = {navController.navigate("${SelectDestination.route}/${it}")}
             )
         }
 
         composable(
-            route = ResultsByQuestionDetailDestination.routeWithArgs,
-            arguments = listOf(navArgument(ResultsByQuestionDetailDestination.itemIdArg) {
-                type = NavType.IntType
-            })
-        ) {backStackEntry ->
-            ResultsByQuestionDetailScreen(
-                viewModel = viewModel,
-                navigateBack = {navController.popBackStack()},
+            route = SelectDestination.routeWithArgs,
+            arguments = listOf(navArgument(SelectDestination.mbtiCategoryArg) {
+                type = NavType.StringType
+            })) { backStackEntry ->
+            SelectScreen(
+                navigateToMbtiResult = {navController.navigate(MbtiResultDestination.route)},
+                navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
+//                viewModel = viewModel,
                 navBackStackEntry = backStackEntry
             )
         }
+
+//        composable(route = MbtiResultDestination.route) {
+//            MbtiResultScreen(
+//                viewModel = viewModel,
+//                navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
+//                naviagteToResultsByQuestion = {navController.navigate(ResultsByQuestionDestination.route)}
+//            )
+//        }
+//
+//        composable(route = ResultsByQuestionDestination.route) {
+//            ResultsByQuestionScreen(
+//                viewModel = viewModel,
+//                navigateBack = {navController.popBackStack()},
+//                navigateToResultsByQuestionDetail = { navController.navigate("${ResultsByQuestionDetailDestination.route}/${it}") },
+//            )
+//        }
+//
+//        composable(
+//            route = ResultsByQuestionDetailDestination.routeWithArgs,
+//            arguments = listOf(navArgument(ResultsByQuestionDetailDestination.itemIdArg) {
+//                type = NavType.IntType
+//            })
+//        ) {backStackEntry ->
+//            ResultsByQuestionDetailScreen(
+//                viewModel = viewModel,
+//                navigateBack = {navController.popBackStack()},
+//                navBackStackEntry = backStackEntry
+//            )
+//        }
 
     }
 }

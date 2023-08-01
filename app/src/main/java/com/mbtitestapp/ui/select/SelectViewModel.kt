@@ -1,5 +1,6 @@
 package com.mbtitestapp.ui.select
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mbtitestapp.data.Mbti
@@ -16,22 +17,59 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class SelectUiState(
     val questionDataList: List<QuestionData> = emptyList(),
-    val selectedOptions: List<RadioButtonOption> = List(2) {RadioButtonOption.NONE}, // TODO : 추후 변경 , 임시로 데이터 2개만 넣어줌
+    val selectedOptions: List<RadioButtonOption> = List(36) {RadioButtonOption.NONE},
 )
 
-class SelectViewModel(
+class SelectViewModel (
+    savedStateHandle: SavedStateHandle,
     private val mbtiInfoRepository: MbtiInfoRepository,
     private val questionRepository: QuestionRepository
-) : ViewModel() {
+) : ViewModel()  {
 
+    // 테스트 종류
+    private val testType: String = checkNotNull(savedStateHandle[SelectDestination.mbtiCategoryArg])
 
-    private val _uiState = MutableStateFlow(SelectUiState(questionDataList = questionDataList()))
+    private val _uiState = MutableStateFlow(SelectUiState())
     val uiState: StateFlow<SelectUiState> = _uiState.asStateFlow()
+
+    init {
+        initialize()
+    }
+
+    /**
+     * 테스트 종류에 맞는 질문 데이터 가져오기
+     */
+    fun initialize() {
+
+        viewModelScope.launch {
+
+            val questionStream = if (testType == MbtiCategory.ALL.name) {
+                questionRepository.getQuestionWithOptionsAll()
+            } else {
+                questionRepository.getQuestionWithOptionsByCategory(MbtiCategory.valueOf(testType))
+            }
+
+            questionStream.collectLatest  { questionWithOptions ->
+                val questionDataList = questionWithOptions.map { questionWithOption ->
+                    val option1: MbtiOptionData = questionWithOption.options[0].toMbtiOptionData()
+                    val option2: MbtiOptionData = questionWithOption.options[1].toMbtiOptionData()
+                    questionWithOption.question.toQuestionData(option1, option2)
+                }
+
+                _uiState.value = _uiState.value.copy(
+                    questionDataList = questionDataList,
+                    selectedOptions = List(questionDataList.size) {RadioButtonOption.NONE}
+                )
+            }
+
+        }
+    }
 
     /**
      *  mbti 에 대한 결과정보
@@ -146,21 +184,17 @@ class SelectViewModel(
 
         val questionDataList: MutableList<QuestionData> = mutableListOf()
         viewModelScope.launch {
-            val flowData: Flow<List<QuestionWithOptions>> = questionRepository.getQuestionWithOptionsStream()
+            val flowData: Flow<List<QuestionWithOptions>> = questionRepository.getQuestionWithOptionsAll()
             flowData.collect {
                 it.forEach { questionWithOptions ->
 
-                    // 임시
-                    if (questionDataList.size == 2) {
+                    val option1: MbtiOptionData = questionWithOptions.options[0].toMbtiOptionData()
+                    val option2: MbtiOptionData = questionWithOptions.options[1].toMbtiOptionData()
 
-                    } else {
-                        val option1: MbtiOptionData = questionWithOptions.options[0].toMbtiOptionData()
-                        val option2: MbtiOptionData = questionWithOptions.options[1].toMbtiOptionData()
+                    val questionData: QuestionData = questionWithOptions.question.toQuestionData(option1, option2)
 
-                        val questionData: QuestionData = questionWithOptions.question.toQuestionData(option1, option2)
+                    questionDataList.add(questionData)
 
-                        questionDataList.add(questionData)
-                    }
 
                 }
             }

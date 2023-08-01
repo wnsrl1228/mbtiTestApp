@@ -8,7 +8,7 @@ import org.json.JSONObject
 
 
 enum class MbtiCategory {
-    IE, SN, TF, PJ
+    IE, SN, TF, PJ, ALL
 }
 enum class MbtiType {
     E, I, S, N, T, F, J, P

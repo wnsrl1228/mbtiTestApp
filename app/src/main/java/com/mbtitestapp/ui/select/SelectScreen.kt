@@ -1,5 +1,6 @@
 package com.mbtitestapp.ui.select
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,10 +43,13 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import com.mbtitestapp.R
 import com.mbtitestapp.data.MbtiCategory
 import com.mbtitestapp.data.MbtiType
 import com.mbtitestapp.navigation.NavigationDestination
+import com.mbtitestapp.ui.AppViewModelProvider
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
 
 enum class RadioButtonOption {
@@ -58,6 +62,8 @@ enum class RadioButtonOption {
 object SelectDestination : NavigationDestination {
     override val route = "select"
     override val titleRes = R.string.app_name
+    const val mbtiCategoryArg = "ALL"
+    val routeWithArgs = "${SelectDestination.route}/{$mbtiCategoryArg}"
 }
 
 @Composable
@@ -65,8 +71,13 @@ fun SelectScreen(
     modifier: Modifier = Modifier,
     navigateToMbtiResult: () -> Unit,
     navigateToHome: () -> Unit,
-    viewModel: SelectViewModel,
+    viewModel: SelectViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navBackStackEntry: NavBackStackEntry
 ) {
+    // NavBackStackEntry에서 arguments를 가져옵니다.
+    val arguments = navBackStackEntry.arguments
+
+    val testType: String = arguments?.getString(SelectDestination.mbtiCategoryArg) ?: "ALL"
 
     var showAlertDialog by remember { mutableStateOf(false) }    // 팝업 창을 표시할 컴포저블 UI
     if (showAlertDialog) {
@@ -97,12 +108,14 @@ fun SelectScreen(
         showAlertDialog = true
     }
 
+    val selectUiState by viewModel.uiState.collectAsState()
 
+    Log.d("asd","asdsad ${selectUiState}")
     Scaffold(
         modifier = modifier
     ) { innerPadding ->
         SelectBody(
-            uiState = viewModel.uiState.collectAsState().value,
+            selectUiState = selectUiState,
             onOptionSelected = viewModel.setCurrentSelectedOption,
             onMbtiResultButtonClick = navigateToMbtiResult,
             modifier = Modifier
@@ -115,13 +128,13 @@ fun SelectScreen(
 
 @Composable
 fun SelectBody(
-    uiState: SelectUiState,
+    selectUiState: SelectUiState,
     onOptionSelected: (Int, RadioButtonOption) -> Unit,
     onMbtiResultButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val questionDataList = uiState.questionDataList                // mbti 테스트 관련 데이터
-    val selectedOptions = uiState.selectedOptions                  // mbti 테스트 관련 데이터
+    val questionDataList = selectUiState.questionDataList                // mbti 테스트 관련 데이터
+    val selectedOptions = selectUiState.selectedOptions                  // mbti 테스트 관련 데이터
     var currentQuestionNum by remember { mutableStateOf(0) } // 현재 선택된 버튼
 
     Column(
@@ -137,10 +150,10 @@ fun SelectBody(
             fontWeight = FontWeight.Bold
         )
 
-
+//        questionDataList.getOrNull(currentQuestionNum)?.questionText ?: ""
         // 질문지
         Text(
-            text = questionDataList[currentQuestionNum].questionText,
+            text = questionDataList.getOrNull(currentQuestionNum)?.questionText ?: "",
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             lineHeight = 1.5.em,
@@ -149,8 +162,8 @@ fun SelectBody(
 
         QuestionOption(
             onOptionSelected = onOptionSelected,
-            optionText1 = questionDataList[currentQuestionNum].option1.optionText,
-            optionText2 = questionDataList[currentQuestionNum].option2.optionText,
+            optionText1 = questionDataList.getOrNull(currentQuestionNum)?.option1?.optionText ?: "",
+            optionText2 = questionDataList.getOrNull(currentQuestionNum)?.option1?.optionText ?: "",
             currentQuestionNum = currentQuestionNum,
             selectedOption = selectedOptions[currentQuestionNum]
         )
@@ -374,7 +387,7 @@ fun SelectBodyPreview() {
     val dummyOnOptionSelected: (Int, RadioButtonOption) -> Unit = { _, _ -> }
     MbtiTestAppTheme {
         SelectBody(
-            uiState = SelectUiState(dummyQuestionDataList, dummySelectedOptions),
+            selectUiState = SelectUiState(dummyQuestionDataList, dummySelectedOptions),
             onOptionSelected = dummyOnOptionSelected,
             onMbtiResultButtonClick ={},
         )
