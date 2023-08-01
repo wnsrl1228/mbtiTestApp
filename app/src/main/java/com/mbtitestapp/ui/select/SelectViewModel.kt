@@ -13,6 +13,7 @@ import com.mbtitestapp.data.question.QuestionRepository
 import com.mbtitestapp.data.question.QuestionWithOptions
 import com.mbtitestapp.data.result.MbtiInfoRepository
 import com.mbtitestapp.data.result.MbtiInfo
+import com.mbtitestapp.data.result.ResultRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +30,8 @@ data class SelectUiState(
 class SelectViewModel (
     savedStateHandle: SavedStateHandle,
     private val mbtiInfoRepository: MbtiInfoRepository,
-    private val questionRepository: QuestionRepository
+    private val questionRepository: QuestionRepository,
+    private val resultRepository: ResultRepository
 ) : ViewModel()  {
 
     // 테스트 종류

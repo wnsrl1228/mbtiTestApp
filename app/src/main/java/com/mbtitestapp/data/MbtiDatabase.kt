@@ -11,6 +11,7 @@ import com.mbtitestapp.data.question.QuestionDao
 import com.mbtitestapp.data.question.QuestionWithOptions
 import com.mbtitestapp.data.result.MbtiInfoDao
 import com.mbtitestapp.data.result.MbtiInfo
+import com.mbtitestapp.data.result.ResultDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -27,6 +28,7 @@ abstract class MbtiDatabase : RoomDatabase() {
 
     abstract fun questionDao(): QuestionDao
     abstract fun optionDao(): OptionDao
+    abstract fun resultDao(): ResultDao
 
     companion object {
         @Volatile
