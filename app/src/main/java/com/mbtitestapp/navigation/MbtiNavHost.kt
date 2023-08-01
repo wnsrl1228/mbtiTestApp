@@ -57,7 +57,6 @@ fun MbtiNavHost(
             SelectScreen(
                 navigateToMbtiResult = {navController.navigate(MbtiResultDestination.route)},
                 navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
-//                viewModel = viewModel,
                 navBackStackEntry = backStackEntry
             )
         }

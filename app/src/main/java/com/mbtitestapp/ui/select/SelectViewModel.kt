@@ -93,7 +93,7 @@ class SelectViewModel (
      * 초기화
      */
     fun resetSelectUiState() {
-        _uiState.value = SelectUiState(questionDataList = questionDataList())
+        _uiState.value = SelectUiState()
     }
 
     /**
@@ -177,31 +177,6 @@ class SelectViewModel (
         }
     }
 
-    /**
-     * TODO : 초기 데이터 생성, 추후 변경
-     */
-    private fun questionDataList(): List<QuestionData> {
-
-        val questionDataList: MutableList<QuestionData> = mutableListOf()
-        viewModelScope.launch {
-            val flowData: Flow<List<QuestionWithOptions>> = questionRepository.getQuestionWithOptionsAll()
-            flowData.collect {
-                it.forEach { questionWithOptions ->
-
-                    val option1: MbtiOptionData = questionWithOptions.options[0].toMbtiOptionData()
-                    val option2: MbtiOptionData = questionWithOptions.options[1].toMbtiOptionData()
-
-                    val questionData: QuestionData = questionWithOptions.question.toQuestionData(option1, option2)
-
-                    questionDataList.add(questionData)
-
-
-                }
-            }
-        }
-
-        return questionDataList
-    }
 }
 data class QuestionData (
     val questionText: String,
