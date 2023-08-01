@@ -17,7 +17,7 @@ object AppViewModelProvider {
                 this.createSavedStateHandle(),
                 mbtiApplication().container.mbtiInfoRepository,
                 mbtiApplication().container.questionRepository,
-                mbtiApplication().container.resultRepository
+                mbtiApplication().container.mbtiResultRepository
             )
         }
 

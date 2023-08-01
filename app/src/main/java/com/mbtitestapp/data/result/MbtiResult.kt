@@ -5,13 +5,13 @@ import androidx.room.PrimaryKey
 import com.mbtitestapp.data.Mbti
 
 
-@Entity(tableName = "result")
-data class Result(
+@Entity(tableName = "mbti_result")
+data class MbtiResult(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val mbti: Mbti,
-    val scoreIE: String,
-    val scoreSN: String,
-    val scoreTF: String,
-    val scorePJ: String,
+    val scoreIE: Int,
+    val scoreSN: Int,
+    val scoreTF: Int,
+    val scorePJ: Int,
 )

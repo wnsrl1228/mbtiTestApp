@@ -8,27 +8,26 @@ import com.mbtitestapp.data.question.Option
 import com.mbtitestapp.data.question.OptionDao
 import com.mbtitestapp.data.question.Question
 import com.mbtitestapp.data.question.QuestionDao
-import com.mbtitestapp.data.question.QuestionWithOptions
 import com.mbtitestapp.data.result.MbtiInfoDao
 import com.mbtitestapp.data.result.MbtiInfo
-import com.mbtitestapp.data.result.ResultDao
+import com.mbtitestapp.data.result.MbtiResult
+import com.mbtitestapp.data.result.MbtiResultDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [MbtiInfo::class, Question::class, Option::class],
-    version = 1,
+    entities = [MbtiInfo::class, Question::class, Option::class, MbtiResult::class],
+    version = 2,
     exportSchema = false
 )
 abstract class MbtiDatabase : RoomDatabase() {
 
-    abstract fun mbtiDao(): MbtiInfoDao
+    abstract fun mbtiInfoDao(): MbtiInfoDao
 
     abstract fun questionDao(): QuestionDao
     abstract fun optionDao(): OptionDao
-    abstract fun resultDao(): ResultDao
+    abstract fun mbtiResultDao(): MbtiResultDao
 
     companion object {
         @Volatile
@@ -43,9 +42,9 @@ abstract class MbtiDatabase : RoomDatabase() {
 
                 // 초기 데이터 삽입
                 CoroutineScope(Dispatchers.IO).launch {
-                    if (instance.mbtiDao().getCount() == 0) {
+                    if (instance.mbtiInfoDao().getCount() == 0) {
                         val initialData = InitialDataUtils.getInitialData(context)
-                        instance.mbtiDao().insertAll(initialData)
+                        instance.mbtiInfoDao().insertAll(initialData)
                     }
 
                     if (instance.questionDao().getCount() == 0) {
