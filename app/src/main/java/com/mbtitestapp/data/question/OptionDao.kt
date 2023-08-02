@@ -8,7 +8,7 @@ import androidx.room.Query
 interface OptionDao {
 
     @Insert
-    fun insertAll(options: List<Option>)
+    suspend fun insertAll(options: List<Option>)
 
     @Query("SELECT COUNT(*) FROM option")
     suspend fun getCount(): Int

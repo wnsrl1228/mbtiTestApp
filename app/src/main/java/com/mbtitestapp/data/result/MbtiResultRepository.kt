@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 class MbtiResultRepository(private val resultDao: MbtiResultDao) {
 
     fun getMbtiResultStream(id: Long): Flow<MbtiResult> = resultDao.getMbtiResult(id)
+    fun getMbtiResultAndMbtiInfoStream(id: Long): Flow<MbtiResultAndMbtiInfo> = resultDao.getMbtiResultAndMbtiInfo(id)
 
-    fun addMbtiResult(result: MbtiResult) = resultDao.insert(result)
+    suspend fun addMbtiResult(result: MbtiResult) : Long = resultDao.insert(result)
 }

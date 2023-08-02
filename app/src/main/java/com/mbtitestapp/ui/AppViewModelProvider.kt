@@ -6,17 +6,24 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.mbtitestapp.MbtiApplication
+import com.mbtitestapp.ui.result.MbtiResultViewModel
 import com.mbtitestapp.ui.select.SelectViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
 
-        // Initializer for HomeViewModel
+        // Initializer for SelectViewModel
         initializer {
             SelectViewModel(
                 this.createSavedStateHandle(),
-                mbtiApplication().container.mbtiInfoRepository,
                 mbtiApplication().container.questionRepository,
+                mbtiApplication().container.mbtiResultRepository
+            )
+        }
+
+        initializer {
+            MbtiResultViewModel(
+                this.createSavedStateHandle(),
                 mbtiApplication().container.mbtiResultRepository
             )
         }

@@ -22,17 +22,15 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.mbtitestapp.R
 import com.mbtitestapp.navigation.NavigationDestination
-import com.mbtitestapp.ui.select.SelectViewModel
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.draw.drawBehind
@@ -45,24 +43,24 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mbtitestapp.data.Mbti
-import com.mbtitestapp.data.MbtiTestResultInfo
-import com.mbtitestapp.data.result.MbtiInfo
+import com.mbtitestapp.ui.AppViewModelProvider
 import com.mbtitestapp.ui.home.MenuButton
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 object MbtiResultDestination : NavigationDestination {
     override val route = "mbti_result"
     override val titleRes = R.string.app_name
+    const val mbtiResultIdArg = "mbtiResultId"
+    val routeWithArgs = "${this.route}/{$mbtiResultIdArg}"
 }
 
 @Composable
 fun MbtiResultScreen (
     modifier: Modifier = Modifier,
-    viewModel: SelectViewModel,
+    viewModel: MbtiResultViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateToHome: () -> Unit,
-    naviagteToResultsByQuestion: () -> Unit
+    naviagteToResultsByQuestion: () -> Unit,
 ) {
 
     var showAlertDialog by remember { mutableStateOf(false) }    // 팝업 창을 표시할 컴포저블 UI
@@ -76,10 +74,7 @@ fun MbtiResultScreen (
             },
             onDismissRequest = { showAlertDialog = false },
             confirmButton = {
-                TextButton(onClick = {
-                    viewModel.resetSelectUiState()
-                    navigateToHome()
-                }) {
+                TextButton(onClick = navigateToHome) {
                     Text(text = "확인")
                 }
             },
@@ -94,28 +89,14 @@ fun MbtiResultScreen (
         showAlertDialog = true
     }
 
-    val mbtiTestResultInfo: MbtiTestResultInfo = viewModel.getMbtiTestResultInfo()
-    val mbtiInfo = remember { mutableStateOf<MbtiInfo?>(null) }
-
-    val coroutineScope = rememberCoroutineScope()
-
-    LaunchedEffect(Unit) {
-        coroutineScope.launch {
-            mbtiInfo.value = viewModel.getMbtiInfo(mbtiTestResultInfo.mbti).first()
-        }
-    }
 
     Scaffold(
         modifier = modifier,
     ) { innerPadding ->
         MbtiResultBody(
-            navigateToHome = {
-                viewModel.resetSelectUiState()
-                navigateToHome()
-            },
+            mbtiResultUiState = viewModel.uiState.collectAsState().value,
+            navigateToHome = navigateToHome,
             naviagteToResultsByQuestion = naviagteToResultsByQuestion,
-            mbtiTestResultInfo = mbtiTestResultInfo,
-            mbtiInfo = mbtiInfo.value,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -124,12 +105,14 @@ fun MbtiResultScreen (
 }
 @Composable
 fun MbtiResultBody(
+    mbtiResultUiState: MbtiResultUiState,
     navigateToHome: () -> Unit,
     naviagteToResultsByQuestion: () -> Unit,
-    mbtiTestResultInfo: MbtiTestResultInfo,
-    mbtiInfo: MbtiInfo?,
     modifier: Modifier = Modifier,
 ) {
+    val mbti: Mbti = mbtiResultUiState.mbti
+    val mbtiResultData: MbtiResultData = mbtiResultUiState.mbtiResultData
+    val mbtiInfoData: MbtiInfoData = mbtiResultUiState.mbtiInfoData
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -146,7 +129,7 @@ fun MbtiResultBody(
         )
 
         Text(
-            text = mbtiTestResultInfo.mbti.name + "\n" + mbtiInfo?.name,
+            text = mbti.name + "\n" + mbtiInfoData.name,
             fontSize = 26.sp,
             textAlign = TextAlign.Center,
             lineHeight = 1.5.em,
@@ -154,15 +137,15 @@ fun MbtiResultBody(
         )
 
         Text(
-            text = mbtiInfo?.detailedDesc ?: "",
+            text = mbtiInfoData.detailedDesc,
             fontSize = 16.sp,
             lineHeight = 1.5.em,
         )
 
         BarChart(
             maxHeight = defaultMaxHeight,
-            values = mbtiTestResultInfo.scores,
-            mbtiResult = mbtiTestResultInfo.mbti
+            values = listOf(mbtiResultData.scoreIE, mbtiResultData.scoreSN, mbtiResultData.scoreTF, mbtiResultData.scorePJ),
+            mbti = mbti
         )
 
         MenuButton(
@@ -186,7 +169,7 @@ private val INTENSITY_LABELS = listOf("매우", "보통", "약간", "약간", "�
 internal fun BarChart(
     modifier: Modifier = Modifier,
     values: List<Int>,
-    mbtiResult: Mbti,
+    mbti: Mbti,
     maxHeight: Dp = defaultMaxHeight  // 차트 높이
 ) {
 
@@ -237,18 +220,18 @@ internal fun BarChart(
                     Bar(
                         score = value,
                         index = index,
-                        mbtiResult = mbtiResult,
+                        mbti = mbti,
                     )
 
-                    val ESTJ = listOf("E", "S", "T", "J")
-                    val INFP = listOf("I", "N", "F", "P")
+                    val estj = listOf("E", "S", "T", "J")
+                    val infp = listOf("I", "N", "F", "P")
                     MbtiText(
-                        text = ESTJ[index],
+                        text = estj[index],
                         modifier = Modifier.align(Alignment.CenterStart),
                         color = colorResource(R.color.bar_estj)
                     )
                     MbtiText(
-                        text = INFP[index],
+                        text = infp[index],
                         modifier = Modifier.align(Alignment.CenterEnd),
                         colorResource(R.color.bar_infp)
                     )
@@ -292,15 +275,15 @@ fun MbtiText(
 private fun Bar(
     score: Int,
     index: Int,
-    mbtiResult: Mbti,
+    mbti: Mbti,
     modifier: Modifier = Modifier
 ) {
 
-    val isESJT: Boolean = mbtiResult.name[index] in listOf('E', 'S', 'T', 'J')
+    val isESJT: Boolean = mbti.name[index] in listOf('E', 'S', 'T', 'J')
     val color = if (isESJT) colorResource(R.color.bar_estj) else colorResource(R.color.bar_infp)
     BoxWithConstraints {
 
-        val barMaxWidth = (this@BoxWithConstraints.maxWidth - 40.dp) / 2  // 바 길이(폰 크기마다 다름)
+        val barMaxWidth = (this@BoxWithConstraints.maxWidth - 45.dp) / 2  // 바 길이(폰 크기마다 다름)
         val ratio: Float = score / MAX_SCORE.toFloat()  // score로 bar 길이 비율 측정
         val barWidth = barMaxWidth * ratio              // 계산된 bar 길이
 
@@ -372,17 +355,20 @@ private fun AxisLabels(
 @Composable
 fun MbtiResultScreenPreview() {
 
+    val mbtiResultUiState = MbtiResultUiState(
+        mbti = Mbti.ENFJ,
+        mbtiInfoData = MbtiInfoData("친절하고 활동적인 교양가", "타인의 성장을 돕고 사회적인 환경을 조성하는 리더십을 가지고 있습니다.",
+            "ENFJ 유형은 친절하고 활동적인 교양가로, 타인의 성장을 돕고 사회적인 환경을 조성하는 리더십을 가지고 있습니다."),
+        mbtiResultData = MbtiResultData(27,27,27,27)
+    )
 
-
-    val mbtiInfo = MbtiInfo(Mbti.ENFJ,"친절하고 활동적인 교양가", "타인의 성장을 돕고 사회적인 환경을 조성하는 리더십을 가지고 있습니다.",
-    "ENFJ 유형은 친절하고 활동적인 교양가로, 타인의 성장을 돕고 사회적인 환경을 조성하는 리더십을 가지고 있습니다.")
     MbtiTestAppTheme {
         Scaffold(
         ) { innerPadding ->
             MbtiResultBody(
-                navigateToHome = {}, naviagteToResultsByQuestion = {},
-                mbtiTestResultInfo = MbtiTestResultInfo(listOf(27,20,3,20), Mbti.ENFJ),
-                mbtiInfo =  mbtiInfo,
+                mbtiResultUiState = mbtiResultUiState,
+                navigateToHome = {},
+                naviagteToResultsByQuestion = {},
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()

@@ -18,14 +18,9 @@ enum class Mbti {
     INFJ, INFP, INTJ, INTP,
     ISFJ, ISFP, ISTJ, ISTP,
     ENFJ, ENFP, ENTJ, ENTP,
-    ESFJ, ESFP, ESTJ, ESTP,
+    ESFJ, ESFP, ESTJ, ESTP, NONE
 }
 
-
-data class MbtiTestResultInfo(
-    val scores: List<Int>,
-    val mbti: Mbti
-)
 
 /**
  * db에 추가할 초기 데이터

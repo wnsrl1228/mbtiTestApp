@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 interface QuestionDao {
 
     @Insert
-    fun insertAll(questions: List<Question>)
+    suspend fun insertAll(questions: List<Question>)
 
     @Query("SELECT COUNT(*) FROM question")
     suspend fun getCount(): Int

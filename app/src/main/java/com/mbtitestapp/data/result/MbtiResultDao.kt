@@ -3,6 +3,7 @@ package com.mbtitestapp.data.result
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 
 
@@ -12,5 +13,9 @@ interface MbtiResultDao {
     fun getMbtiResult(id: Long): Flow<MbtiResult>
 
     @Insert
-    fun insert(result: MbtiResult)
+    suspend fun insert(result: MbtiResult) : Long
+
+    @Transaction
+    @Query("SELECT * FROM mbti_result WHERE id = :id")
+    fun getMbtiResultAndMbtiInfo(id: Long): Flow<MbtiResultAndMbtiInfo>
 }

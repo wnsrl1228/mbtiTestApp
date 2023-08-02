@@ -5,15 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mbtitestapp.data.Mbti
 import com.mbtitestapp.data.MbtiCategory
-import com.mbtitestapp.data.MbtiTestResultInfo
 import com.mbtitestapp.data.MbtiType
 import com.mbtitestapp.data.question.Option
 import com.mbtitestapp.data.question.Question
 import com.mbtitestapp.data.question.QuestionRepository
-import com.mbtitestapp.data.result.MbtiInfoRepository
-import com.mbtitestapp.data.result.MbtiInfo
+import com.mbtitestapp.data.result.MbtiResult
 import com.mbtitestapp.data.result.MbtiResultRepository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,7 +25,6 @@ data class SelectUiState(
 
 class SelectViewModel (
     savedStateHandle: SavedStateHandle,
-    private val mbtiInfoRepository: MbtiInfoRepository,
     private val questionRepository: QuestionRepository,
     private val mbtiResultRepository: MbtiResultRepository
 ) : ViewModel()  {
@@ -72,12 +68,7 @@ class SelectViewModel (
         }
     }
 
-    /**
-     *  mbti 에 대한 결과정보
-     */
-    suspend fun getMbtiInfo(mbti: Mbti): Flow<MbtiInfo> {
-        return mbtiInfoRepository.getMbtiInfoStream(mbti)
-    }
+
 
     /**
      * 질문지에서 현재 선택한 항목으로 데이터 변경
@@ -98,9 +89,9 @@ class SelectViewModel (
     }
 
     /**
-     * 테스트 결과 출력
+     * 테스트 결과 저장, id 반환
      */
-    fun getMbtiTestResultInfo(): MbtiTestResultInfo {
+    suspend fun addMbtiResult(): Long {
         val selectedOptions = _uiState.value.selectedOptions
         val questionDataList = _uiState.value.questionDataList
 
@@ -154,12 +145,21 @@ class SelectViewModel (
         }
 
         // text -> enum 변경
-        val resultMbti: Mbti = Mbti.values().find { it.name == resultMbtiText.toString() }
+        val mbti: Mbti = Mbti.values().find { it.name == resultMbtiText.toString() }
             ?: throw IllegalArgumentException("Invalid MBTI type")
 
+        val mbtiResult = MbtiResult(
+            mbti = mbti,
+            scoreIE = scores[0],
+            scoreSN = scores[1],
+            scoreTF = scores[2],
+            scorePJ = scores[3]
+        )
+        val mbtiResultId = mbtiResultRepository.addMbtiResult(mbtiResult)
 
-        return MbtiTestResultInfo(scores, resultMbti)
+        return mbtiResultId
     }
+
 
     private fun updateMBTIScore(
         selectedOption: RadioButtonOption,

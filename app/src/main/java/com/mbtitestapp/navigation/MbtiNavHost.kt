@@ -53,21 +53,23 @@ fun MbtiNavHost(
             route = SelectDestination.routeWithArgs,
             arguments = listOf(navArgument(SelectDestination.mbtiCategoryArg) {
                 type = NavType.StringType
-            })) { backStackEntry ->
+            })) {
             SelectScreen(
-                navigateToMbtiResult = {navController.navigate(MbtiResultDestination.route)},
+                navigateToMbtiResult = {navController.navigate("${MbtiResultDestination.route}/${it}")},
                 navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
-                navBackStackEntry = backStackEntry
             )
         }
 
-//        composable(route = MbtiResultDestination.route) {
-//            MbtiResultScreen(
-//                viewModel = viewModel,
-//                navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
-//                naviagteToResultsByQuestion = {navController.navigate(ResultsByQuestionDestination.route)}
-//            )
-//        }
+        composable(
+            route = MbtiResultDestination.routeWithArgs,
+            arguments = listOf(navArgument(MbtiResultDestination.mbtiResultIdArg) {
+                type = NavType.LongType
+            })) {
+            MbtiResultScreen(
+                navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
+                naviagteToResultsByQuestion = {navController.navigate(ResultsByQuestionDestination.route)},
+            )
+        }
 //
 //        composable(route = ResultsByQuestionDestination.route) {
 //            ResultsByQuestionScreen(

@@ -1,6 +1,5 @@
 package com.mbtitestapp.ui.select
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +26,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,13 +44,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import com.mbtitestapp.R
 import com.mbtitestapp.data.MbtiCategory
 import com.mbtitestapp.data.MbtiType
 import com.mbtitestapp.navigation.NavigationDestination
 import com.mbtitestapp.ui.AppViewModelProvider
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
+import kotlinx.coroutines.launch
 
 enum class RadioButtonOption {
     NONE,
@@ -69,15 +69,10 @@ object SelectDestination : NavigationDestination {
 @Composable
 fun SelectScreen(
     modifier: Modifier = Modifier,
-    navigateToMbtiResult: () -> Unit,
+    navigateToMbtiResult: (Long) -> Unit,
     navigateToHome: () -> Unit,
     viewModel: SelectViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    navBackStackEntry: NavBackStackEntry
 ) {
-    // NavBackStackEntry에서 arguments를 가져옵니다.
-    val arguments = navBackStackEntry.arguments
-
-    val testType: String = arguments?.getString(SelectDestination.mbtiCategoryArg) ?: "ALL"
 
     var showAlertDialog by remember { mutableStateOf(false) }    // 팝업 창을 표시할 컴포저블 UI
     if (showAlertDialog) {
@@ -110,14 +105,20 @@ fun SelectScreen(
 
     val selectUiState by viewModel.uiState.collectAsState()
 
-    Log.d("asd","asdsad ${selectUiState}")
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
         modifier = modifier
     ) { innerPadding ->
         SelectBody(
             selectUiState = selectUiState,
             onOptionSelected = viewModel.setCurrentSelectedOption,
-            onMbtiResultButtonClick = navigateToMbtiResult,
+            onMbtiResultButtonClick = {
+                coroutineScope.launch {
+                    navigateToMbtiResult(viewModel.addMbtiResult())
+                    viewModel.resetSelectUiState()
+                }
+            },
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -385,11 +386,12 @@ fun SelectBodyPreview() {
     )
 
     val dummyOnOptionSelected: (Int, RadioButtonOption) -> Unit = { _, _ -> }
+
     MbtiTestAppTheme {
         SelectBody(
             selectUiState = SelectUiState(dummyQuestionDataList, dummySelectedOptions),
             onOptionSelected = dummyOnOptionSelected,
-            onMbtiResultButtonClick ={},
+            onMbtiResultButtonClick = {},
         )
     }
 }

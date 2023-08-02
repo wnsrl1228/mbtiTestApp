@@ -13,7 +13,7 @@ interface MbtiInfoDao {
     fun getMbtiInfo(mbti: Mbti): Flow<MbtiInfo>
 
     @Insert
-    fun insertAll(mbtiInfo: List<MbtiInfo>)
+    suspend fun insertAll(mbtiInfo: List<MbtiInfo>)
 
     @Query("SELECT COUNT(*) FROM mbti_info")
     suspend fun getCount(): Int
