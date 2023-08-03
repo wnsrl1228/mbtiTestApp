@@ -17,7 +17,8 @@ object AppViewModelProvider {
             SelectViewModel(
                 this.createSavedStateHandle(),
                 mbtiApplication().container.questionRepository,
-                mbtiApplication().container.mbtiResultRepository
+                mbtiApplication().container.mbtiResultRepository,
+                mbtiApplication().container.questionResultRepository
             )
         }
 

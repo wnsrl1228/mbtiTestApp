@@ -29,7 +29,7 @@ import com.mbtitestapp.data.MbtiCategory
 import com.mbtitestapp.data.MbtiType
 import com.mbtitestapp.navigation.NavigationDestination
 import com.mbtitestapp.ui.menu.MbtiTestMenuDestination
-import com.mbtitestapp.ui.select.MbtiOptionData
+import com.mbtitestapp.ui.select.OptionData
 import com.mbtitestapp.ui.select.OptionRadioButton
 import com.mbtitestapp.ui.select.OtherRadioButton
 import com.mbtitestapp.ui.select.QuestionData
@@ -112,8 +112,8 @@ fun ResultsByQuestionDetailBody(
 }
 @Composable
 fun ResultQuestionOption(
-    option1: MbtiOptionData,
-    option2: MbtiOptionData,
+    option1: OptionData,
+    option2: OptionData,
     selectedOption: RadioButtonOption
 
 ) {
@@ -197,10 +197,10 @@ fun ResultsByQuestionDetailScreenPreview() {
     // 임의의 더미 데이터 생성
     val dummyQuestionDataList = listOf(
         QuestionData(
-            "영화 속에서 뜬금없이 나온 슬픈 장면, 하지만 얼마전 내가 겪은 상황과 비슷하다.",
+            1, "영화 속에서 뜬금없이 나온 슬픈 장면, 하지만 얼마전 내가 겪은 상황과 비슷하다.",
             MbtiCategory.PJ,
-            MbtiOptionData("나 20분 정도 늦을 거 같아. 정말 미안한데 돈 줄 테니까 가페에서 조금만 기다려 줄 수 있어?", MbtiType.E),
-            MbtiOptionData("2번", MbtiType.I)
+            OptionData("나 20분 정도 늦을 거 같아. 정말 미안한데 돈 줄 테니까 가페에서 조금만 기다려 줄 수 있어?", MbtiType.E),
+            OptionData("2번", MbtiType.I)
         ),
     )
     val dummySelectedOptions = listOf(

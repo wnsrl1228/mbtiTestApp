@@ -12,13 +12,15 @@ import com.mbtitestapp.data.result.MbtiInfoDao
 import com.mbtitestapp.data.result.MbtiInfo
 import com.mbtitestapp.data.result.MbtiResult
 import com.mbtitestapp.data.result.MbtiResultDao
+import com.mbtitestapp.data.result.QuestionResult
+import com.mbtitestapp.data.result.QuestionResultDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [MbtiInfo::class, Question::class, Option::class, MbtiResult::class],
-    version = 2,
+    entities = [MbtiInfo::class, Question::class, Option::class, MbtiResult::class, QuestionResult::class],
+    version = 3,
     exportSchema = false
 )
 abstract class MbtiDatabase : RoomDatabase() {
@@ -28,7 +30,7 @@ abstract class MbtiDatabase : RoomDatabase() {
     abstract fun questionDao(): QuestionDao
     abstract fun optionDao(): OptionDao
     abstract fun mbtiResultDao(): MbtiResultDao
-
+    abstract fun questionResultDao(): QuestionResultDao
     companion object {
         @Volatile
         private var Instance: MbtiDatabase? = null

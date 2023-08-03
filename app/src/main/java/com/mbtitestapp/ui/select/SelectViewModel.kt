@@ -11,6 +11,8 @@ import com.mbtitestapp.data.question.Question
 import com.mbtitestapp.data.question.QuestionRepository
 import com.mbtitestapp.data.result.MbtiResult
 import com.mbtitestapp.data.result.MbtiResultRepository
+import com.mbtitestapp.data.result.QuestionResult
+import com.mbtitestapp.data.result.QuestionResultRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,7 +28,8 @@ data class SelectUiState(
 class SelectViewModel (
     savedStateHandle: SavedStateHandle,
     private val questionRepository: QuestionRepository,
-    private val mbtiResultRepository: MbtiResultRepository
+    private val mbtiResultRepository: MbtiResultRepository,
+    private val questionResultRepository: QuestionResultRepository
 ) : ViewModel()  {
 
     // 테스트 종류
@@ -54,8 +57,8 @@ class SelectViewModel (
 
             questionStream.collectLatest  { questionWithOptions ->
                 val questionDataList = questionWithOptions.map { questionWithOption ->
-                    val option1: MbtiOptionData = questionWithOption.options[0].toMbtiOptionData()
-                    val option2: MbtiOptionData = questionWithOption.options[1].toMbtiOptionData()
+                    val option1: OptionData = questionWithOption.options[0].toMbtiOptionData()
+                    val option2: OptionData = questionWithOption.options[1].toMbtiOptionData()
                     questionWithOption.question.toQuestionData(option1, option2)
                 }
 
@@ -165,6 +168,19 @@ class SelectViewModel (
         )
         val mbtiResultId = mbtiResultRepository.addMbtiResult(mbtiResult)
 
+        val questionResults = mutableListOf<QuestionResult>()
+        for ((index, question) in questionDataList.withIndex()) {
+            questionResults.add(
+                QuestionResult(
+                    mbtiResultId = mbtiResultId,
+                    questionId = question.id,
+                    selectedOption = selectedOptions[index]
+                )
+            )
+        }
+
+        questionResultRepository.insertAllQuestionResult(questionResults)
+
         return mbtiResultId
     }
 
@@ -188,20 +204,22 @@ class SelectViewModel (
 
 }
 data class QuestionData (
+    val id : Long,
     val questionText: String,
     val mbtiCategory: MbtiCategory,
-    val option1: MbtiOptionData,
-    val option2: MbtiOptionData
+    val option1: OptionData,
+    val option2: OptionData
 )
-data class MbtiOptionData (
+data class OptionData (
     val optionText: String,
     val mbtiType: MbtiType
 )
-fun Option.toMbtiOptionData(): MbtiOptionData = MbtiOptionData(
+fun Option.toMbtiOptionData(): OptionData = OptionData(
     optionText = optionText,
     mbtiType = mbtiType
 )
-fun Question.toQuestionData(option1: MbtiOptionData, option2: MbtiOptionData): QuestionData = QuestionData(
+fun Question.toQuestionData(option1: OptionData, option2: OptionData): QuestionData = QuestionData(
+    id = id,
     questionText = questionText,
     mbtiCategory = mbtiCategory,
     option1 = option1,

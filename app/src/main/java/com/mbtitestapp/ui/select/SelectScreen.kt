@@ -374,10 +374,10 @@ fun OtherRadioButton(
 @Composable
 fun SelectBodyPreview() {
     val dummyQuestionDataList = listOf(
-        QuestionData("안녕1", MbtiCategory.PJ, MbtiOptionData("1번", MbtiType.E), MbtiOptionData("2번", MbtiType.E)),
-        QuestionData("안녕2", MbtiCategory.PJ, MbtiOptionData("1번", MbtiType.E), MbtiOptionData("2번", MbtiType.I)),
-        QuestionData("안녕2", MbtiCategory.PJ, MbtiOptionData("1번", MbtiType.F), MbtiOptionData("2번", MbtiType.T)),
-        QuestionData("안녕2", MbtiCategory.PJ, MbtiOptionData("1번", MbtiType.T), MbtiOptionData("2번", MbtiType.F)),
+        QuestionData(1, "안녕1", MbtiCategory.PJ, OptionData("1번", MbtiType.E), OptionData("2번", MbtiType.E)),
+        QuestionData(2, "안녕2", MbtiCategory.PJ, OptionData("1번", MbtiType.E), OptionData("2번", MbtiType.I)),
+        QuestionData(3, "안녕2", MbtiCategory.PJ, OptionData("1번", MbtiType.F), OptionData("2번", MbtiType.T)),
+        QuestionData(4, "안녕2", MbtiCategory.PJ, OptionData("1번", MbtiType.T), OptionData("2번", MbtiType.F)),
         // 다른 항목들도 추가
     )
     val dummySelectedOptions = listOf(
