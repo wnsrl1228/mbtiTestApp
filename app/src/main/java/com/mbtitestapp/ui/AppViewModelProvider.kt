@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.mbtitestapp.MbtiApplication
 import com.mbtitestapp.ui.result.MbtiResultViewModel
+import com.mbtitestapp.ui.result.ResultsByQuestionViewModel
 import com.mbtitestapp.ui.select.SelectViewModel
 
 object AppViewModelProvider {
@@ -26,6 +27,13 @@ object AppViewModelProvider {
             MbtiResultViewModel(
                 this.createSavedStateHandle(),
                 mbtiApplication().container.mbtiResultRepository
+            )
+        }
+
+        initializer {
+            ResultsByQuestionViewModel(
+                this.createSavedStateHandle(),
+                mbtiApplication().container.questionResultRepository
             )
         }
 

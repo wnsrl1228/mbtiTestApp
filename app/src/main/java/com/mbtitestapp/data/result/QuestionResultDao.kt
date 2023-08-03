@@ -14,6 +14,10 @@ interface QuestionResultDao {
     suspend fun insertAll(questionResults: List<QuestionResult>)
 
     @Transaction
-    @Query("SELECT * FROM mbti_result WHERE id = :id")
-    fun getQuestionResultAndMbtiResult(id: Long): Flow<List<QuestionResultAndMbtiResult>>
+    @Query("SELECT * FROM question_result WHERE mbtiResultId = :id")
+    fun getQuestionResultAndQuestion(id: Long): Flow<List<QuestionResultAndQuestion>>
+
+//    @Transaction
+//    @Query("SELECT * FROM question_result WHERE id = :id")
+//    fun getQuestionResultAndMbtiResult(id: Long): Flow<List<QuestionResultAndMbtiResult>>
 }

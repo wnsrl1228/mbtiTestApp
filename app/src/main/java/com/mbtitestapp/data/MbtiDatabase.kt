@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [MbtiInfo::class, Question::class, Option::class, MbtiResult::class, QuestionResult::class],
-    version = 3,
+    version = 1,
     exportSchema = false
 )
 abstract class MbtiDatabase : RoomDatabase() {

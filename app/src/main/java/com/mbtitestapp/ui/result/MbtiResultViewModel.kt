@@ -50,6 +50,9 @@ class MbtiResultViewModel(
             }
         }
     }
+    fun getMbtiResultId() :Long {
+        return mbtiResultId
+    }
 }
 
 data class MbtiResultData(

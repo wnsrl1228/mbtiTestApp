@@ -1,5 +1,6 @@
 package com.mbtitestapp.ui.select
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -134,9 +135,10 @@ fun SelectBody(
     onMbtiResultButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val questionDataList = selectUiState.questionDataList                // mbti 테스트 관련 데이터
-    val selectedOptions = selectUiState.selectedOptions                  // mbti 테스트 관련 데이터
-    var currentQuestionNum by remember { mutableStateOf(0) } // 현재 선택된 버튼
+    val questionDataList = selectUiState.questionDataList                 // mbti 테스트 관련 데이터
+    var currentQuestionNum by remember { mutableStateOf(0) }        // 현재 선택된 버튼
+
+    val currentSelectedOption = questionDataList.getOrNull(currentQuestionNum)?.selectedOption ?: RadioButtonOption.NONE
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -151,7 +153,6 @@ fun SelectBody(
             fontWeight = FontWeight.Bold
         )
 
-//        questionDataList.getOrNull(currentQuestionNum)?.questionText ?: ""
         // 질문지
         Text(
             text = questionDataList.getOrNull(currentQuestionNum)?.questionText ?: "",
@@ -164,9 +165,9 @@ fun SelectBody(
         QuestionOption(
             onOptionSelected = onOptionSelected,
             optionText1 = questionDataList.getOrNull(currentQuestionNum)?.option1?.optionText ?: "",
-            optionText2 = questionDataList.getOrNull(currentQuestionNum)?.option1?.optionText ?: "",
+            optionText2 = questionDataList.getOrNull(currentQuestionNum)?.option2?.optionText ?: "",
             currentQuestionNum = currentQuestionNum,
-            selectedOption = selectedOptions[currentQuestionNum]
+            selectedOption = currentSelectedOption
         )
 
         Row(
@@ -184,7 +185,7 @@ fun SelectBody(
             Spacer(modifier = Modifier.weight(1f))
 
             NextOrResultButton(
-                enabled = selectedOptions[currentQuestionNum] != RadioButtonOption.NONE,
+                enabled = currentSelectedOption != RadioButtonOption.NONE,
                 onNextClick = { currentQuestionNum++ },
                 onResultClick = onMbtiResultButtonClick,
                 isLastQuestion = currentQuestionNum == questionDataList.size - 1,
@@ -261,6 +262,7 @@ fun QuestionOption(
     selectedOption: RadioButtonOption
 
 ) {
+
     OptionRadioButton(
         selected = selectedOption == RadioButtonOption.OPTION_1,
         onOptionSelected = {onOptionSelected(currentQuestionNum, RadioButtonOption.OPTION_1)},
@@ -374,22 +376,18 @@ fun OtherRadioButton(
 @Composable
 fun SelectBodyPreview() {
     val dummyQuestionDataList = listOf(
-        QuestionData(1, "안녕1", MbtiCategory.PJ, OptionData("1번", MbtiType.E), OptionData("2번", MbtiType.E)),
-        QuestionData(2, "안녕2", MbtiCategory.PJ, OptionData("1번", MbtiType.E), OptionData("2번", MbtiType.I)),
-        QuestionData(3, "안녕2", MbtiCategory.PJ, OptionData("1번", MbtiType.F), OptionData("2번", MbtiType.T)),
-        QuestionData(4, "안녕2", MbtiCategory.PJ, OptionData("1번", MbtiType.T), OptionData("2번", MbtiType.F)),
+        QuestionData(1, "안녕1", MbtiCategory.PJ, OptionData("1번", MbtiType.E), OptionData("2번", MbtiType.E), RadioButtonOption.OPTION_1),
+        QuestionData(2, "안녕2", MbtiCategory.PJ, OptionData("1번", MbtiType.E), OptionData("2번", MbtiType.I), RadioButtonOption.OPTION_1),
+        QuestionData(3, "안녕2", MbtiCategory.PJ, OptionData("1번", MbtiType.F), OptionData("2번", MbtiType.T), RadioButtonOption.OPTION_1),
+        QuestionData(4, "안녕2", MbtiCategory.PJ, OptionData("1번", MbtiType.T), OptionData("2번", MbtiType.F), RadioButtonOption.OPTION_2),
         // 다른 항목들도 추가
-    )
-    val dummySelectedOptions = listOf(
-        RadioButtonOption.OPTION_2,RadioButtonOption.OPTION_2,RadioButtonOption.OPTION_2,
-        RadioButtonOption.OTHER
     )
 
     val dummyOnOptionSelected: (Int, RadioButtonOption) -> Unit = { _, _ -> }
 
     MbtiTestAppTheme {
         SelectBody(
-            selectUiState = SelectUiState(dummyQuestionDataList, dummySelectedOptions),
+            selectUiState = SelectUiState(dummyQuestionDataList),
             onOptionSelected = dummyOnOptionSelected,
             onMbtiResultButtonClick = {},
         )

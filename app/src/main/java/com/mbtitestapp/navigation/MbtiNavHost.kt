@@ -67,17 +67,20 @@ fun MbtiNavHost(
             })) {
             MbtiResultScreen(
                 navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
-                naviagteToResultsByQuestion = {navController.navigate(ResultsByQuestionDestination.route)},
+                naviagteToResultsByQuestion = {navController.navigate("${ResultsByQuestionDestination.route}/${it}")},
             )
         }
-//
-//        composable(route = ResultsByQuestionDestination.route) {
-//            ResultsByQuestionScreen(
-//                viewModel = viewModel,
-//                navigateBack = {navController.popBackStack()},
-//                navigateToResultsByQuestionDetail = { navController.navigate("${ResultsByQuestionDetailDestination.route}/${it}") },
-//            )
-//        }
+
+        composable(
+            route = ResultsByQuestionDestination.routeWithArgs,
+            arguments = listOf(navArgument(ResultsByQuestionDestination.mbtiResultIdArg) {
+                type = NavType.LongType
+            })) {
+            ResultsByQuestionScreen(
+                navigateBack = {navController.popBackStack()},
+                navigateToResultsByQuestionDetail = { navController.navigate("${ResultsByQuestionDetailDestination.route}/${it}") },
+            )
+        }
 //
 //        composable(
 //            route = ResultsByQuestionDetailDestination.routeWithArgs,

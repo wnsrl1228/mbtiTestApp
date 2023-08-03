@@ -60,7 +60,7 @@ fun MbtiResultScreen (
     modifier: Modifier = Modifier,
     viewModel: MbtiResultViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateToHome: () -> Unit,
-    naviagteToResultsByQuestion: () -> Unit,
+    naviagteToResultsByQuestion: (Long) -> Unit,
 ) {
 
     var showAlertDialog by remember { mutableStateOf(false) }    // 팝업 창을 표시할 컴포저블 UI
@@ -96,7 +96,7 @@ fun MbtiResultScreen (
         MbtiResultBody(
             mbtiResultUiState = viewModel.uiState.collectAsState().value,
             navigateToHome = navigateToHome,
-            naviagteToResultsByQuestion = naviagteToResultsByQuestion,
+            naviagteToResultsByQuestion = {naviagteToResultsByQuestion(viewModel.getMbtiResultId())},
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()

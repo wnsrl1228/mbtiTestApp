@@ -11,7 +11,7 @@ enum class MbtiCategory {
     IE, SN, TF, PJ, ALL
 }
 enum class MbtiType {
-    E, I, S, N, T, F, J, P
+    E, I, S, N, T, F, J, P, X
 }
 
 enum class Mbti {

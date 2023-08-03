@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
 
 data class SelectUiState(
     val questionDataList: List<QuestionData> = emptyList(),
-    val selectedOptions: List<RadioButtonOption> = List(36) {RadioButtonOption.NONE},
 )
 
 class SelectViewModel (
@@ -64,7 +63,6 @@ class SelectViewModel (
 
                 _uiState.value = _uiState.value.copy(
                     questionDataList = questionDataList,
-                    selectedOptions = List(questionDataList.size) {RadioButtonOption.NONE}
                 )
             }
 
@@ -75,12 +73,14 @@ class SelectViewModel (
 
     /**
      * 질문지에서 현재 선택한 항목으로 데이터 변경
+     * (List일 경우 객체 자체가 변경되어야지 상태 변경이 감지 된다.)
      */
     val setCurrentSelectedOption: (Int, RadioButtonOption) -> Unit = { index, option ->
         _uiState.update { currentState ->
-            val updatedOptions = currentState.selectedOptions.toMutableList()
-            updatedOptions[index] = option
-            currentState.copy(selectedOptions = updatedOptions)
+            val updatedOptions = currentState.questionDataList.toMutableList()
+            val questionData = updatedOptions[index].copy(selectedOption =  option)
+            updatedOptions[index] = questionData
+            currentState.copy(questionDataList = updatedOptions)
         }
     }
 
@@ -95,7 +95,7 @@ class SelectViewModel (
      * 테스트 결과 저장, id 반환
      */
     suspend fun addMbtiResult(): Long {
-        val selectedOptions = _uiState.value.selectedOptions
+
         val questionDataList = _uiState.value.questionDataList
 
         val mbtiScore: MutableMap<MbtiType, Int> = mutableMapOf(
@@ -113,10 +113,10 @@ class SelectViewModel (
 
             // 점수 업데이트
             when(questionDataList[i].mbtiCategory) {
-                MbtiCategory.IE -> updateMBTIScore(selectedOptions[i], questionDataList[i], mbtiScore)
-                MbtiCategory.TF -> updateMBTIScore(selectedOptions[i], questionDataList[i], mbtiScore)
-                MbtiCategory.SN -> updateMBTIScore(selectedOptions[i], questionDataList[i], mbtiScore)
-                MbtiCategory.PJ -> updateMBTIScore(selectedOptions[i], questionDataList[i], mbtiScore)
+                MbtiCategory.IE -> updateMBTIScore(questionDataList[i].selectedOption, questionDataList[i], mbtiScore)
+                MbtiCategory.TF -> updateMBTIScore(questionDataList[i].selectedOption, questionDataList[i], mbtiScore)
+                MbtiCategory.SN -> updateMBTIScore(questionDataList[i].selectedOption, questionDataList[i], mbtiScore)
+                MbtiCategory.PJ -> updateMBTIScore(questionDataList[i].selectedOption, questionDataList[i], mbtiScore)
                 else -> throw IllegalArgumentException("존재하지 않는 mbti 타입이다.")
             }
         }
@@ -170,11 +170,20 @@ class SelectViewModel (
 
         val questionResults = mutableListOf<QuestionResult>()
         for ((index, question) in questionDataList.withIndex()) {
+
+            var selectedMbtiType = MbtiType.X
+            if (question.selectedOption == RadioButtonOption.OPTION_1) {
+                selectedMbtiType = question.option1.mbtiType
+            } else if (question.selectedOption == RadioButtonOption.OPTION_2) {
+                selectedMbtiType = question.option2.mbtiType
+            }
+
             questionResults.add(
                 QuestionResult(
                     mbtiResultId = mbtiResultId,
                     questionId = question.id,
-                    selectedOption = selectedOptions[index]
+                    selectedOption = question.selectedOption,
+                    selectedMbtiType = selectedMbtiType
                 )
             )
         }
@@ -208,7 +217,8 @@ data class QuestionData (
     val questionText: String,
     val mbtiCategory: MbtiCategory,
     val option1: OptionData,
-    val option2: OptionData
+    val option2: OptionData,
+    var selectedOption: RadioButtonOption = RadioButtonOption.NONE
 )
 data class OptionData (
     val optionText: String,

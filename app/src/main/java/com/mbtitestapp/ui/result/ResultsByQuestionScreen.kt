@@ -20,30 +20,33 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mbtitestapp.MbitTopAppBar
 import com.mbtitestapp.R
 import com.mbtitestapp.data.MbtiCategory
 import com.mbtitestapp.data.MbtiType
 import com.mbtitestapp.navigation.NavigationDestination
+import com.mbtitestapp.ui.AppViewModelProvider
 import com.mbtitestapp.ui.menu.MbtiTestMenuDestination
 import com.mbtitestapp.ui.select.OptionData
 import com.mbtitestapp.ui.select.QuestionData
 import com.mbtitestapp.ui.select.RadioButtonOption
 import com.mbtitestapp.ui.select.SelectUiState
-import com.mbtitestapp.ui.select.SelectViewModel
 import com.mbtitestapp.ui.theme.MbtiTestAppTheme
 
 object ResultsByQuestionDestination : NavigationDestination {
     override val route = "results_by_question"
     override val titleRes = R.string.app_name
+    const val mbtiResultIdArg = "mbtiResultId"
+    val routeWithArgs = "${this.route}/{$mbtiResultIdArg}"
 }
 
 @Composable
 fun ResultsByQuestionScreen(
-    viewModel: SelectViewModel,
-    modifier: Modifier = Modifier,
+    viewModel: ResultsByQuestionViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateBack: () -> Unit,
     navigateToResultsByQuestionDetail: (Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(
         topBar = {
@@ -66,7 +69,7 @@ fun ResultsByQuestionScreen(
 
 @Composable
 fun ResultsByQuestionBody(
-    uiState: SelectUiState,
+    uiState: ResultsByQuestionUiState,
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -74,7 +77,7 @@ fun ResultsByQuestionBody(
     LazyColumn(
         modifier = modifier // topbar 가리는 문제 해결
     ) {
-        itemsIndexed(uiState.questionDataList) { index, questionData ->
+        itemsIndexed(uiState.questionResultDataList) { index, questionResultData ->
             Card(
                 shape = RoundedCornerShape(0.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -84,15 +87,8 @@ fun ResultsByQuestionBody(
                     .clickable {
                         onItemClick(index)
                     }
-            
-            ) {
 
-                var selectedOption = ""
-                when(uiState.selectedOptions[index]) {
-                    RadioButtonOption.OPTION_1 -> selectedOption = questionData.option1.mbtiType.name
-                    RadioButtonOption.OPTION_2 -> selectedOption = questionData.option2.mbtiType.name
-                    else -> selectedOption = "―"
-                }
+            ) {
 
                 Row(
                     modifier = Modifier.padding(18.dp)
@@ -100,12 +96,12 @@ fun ResultsByQuestionBody(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = "${1 + index}. ${questionData.questionText}",
+                        text = "${1 + index}. ${questionResultData.questionText}",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
                     )
-                    Text(text = "${questionData.mbtiCategory} / ${selectedOption}" )
+                    Text(text = "${questionResultData.mbtiCategory} / ${questionResultData.selectedMbtiType}" )
                 }
             }
         }
@@ -130,7 +126,7 @@ fun ResultsByQuestionScreenPreview() {
     )
 
 
-    MbtiTestAppTheme {
-        ResultsByQuestionBody(SelectUiState(dummyQuestionDataList, dummySelectedOptions), onItemClick = {})
-    }
+//    MbtiTestAppTheme {
+//        ResultsByQuestionBody(SelectUiState(dummyQuestionDataList, dummySelectedOptions), onItemClick = {})
+//    }
 }
