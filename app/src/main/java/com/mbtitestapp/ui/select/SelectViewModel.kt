@@ -124,7 +124,7 @@ class SelectViewModel (
          */
         val mbtiTypes = listOf(MbtiType.I, MbtiType.E, MbtiType.N, MbtiType.S, MbtiType.T, MbtiType.F, MbtiType.J, MbtiType.P)
         val scores = mutableListOf<Int>()
-        val resultMbtiText = StringBuilder()
+        var resultMbtiText = StringBuilder()
 
         for (i in mbtiTypes.indices step 2) {
             val firstType = mbtiTypes[i]
@@ -144,6 +144,14 @@ class SelectViewModel (
             )
         }
 
+        if (testType != "ALL") {
+            when (testType) {
+                "IE" -> resultMbtiText = StringBuilder(resultMbtiText[0].toString())
+                "SN" -> resultMbtiText = StringBuilder(resultMbtiText[1].toString())
+                "TF" -> resultMbtiText = StringBuilder(resultMbtiText[2].toString())
+                "PJ" -> resultMbtiText = StringBuilder(resultMbtiText[3].toString())
+            }
+        }
         // text -> enum 변경
         val mbti: Mbti = Mbti.values().find { it.name == resultMbtiText.toString() }
             ?: throw IllegalArgumentException("Invalid MBTI type")

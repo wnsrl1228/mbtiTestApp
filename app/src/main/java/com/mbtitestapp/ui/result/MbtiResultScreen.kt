@@ -279,7 +279,9 @@ private fun Bar(
     modifier: Modifier = Modifier
 ) {
 
-    val isESJT: Boolean = mbti.name[index] in listOf('E', 'S', 'T', 'J')
+    val index = if (mbti.name.length == 1) 0 else index
+    val isESJT = mbti.name[index] in listOf('E', 'S', 'T', 'J')
+
     val color = if (isESJT) colorResource(R.color.bar_estj) else colorResource(R.color.bar_infp)
     BoxWithConstraints {
 

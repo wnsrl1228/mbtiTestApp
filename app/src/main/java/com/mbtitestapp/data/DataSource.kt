@@ -18,7 +18,8 @@ enum class Mbti {
     INFJ, INFP, INTJ, INTP,
     ISFJ, ISFP, ISTJ, ISTP,
     ENFJ, ENFP, ENTJ, ENTP,
-    ESFJ, ESFP, ESTJ, ESTP, NONE
+    ESFJ, ESFP, ESTJ, ESTP,
+    I, E, S, N, T, F, J, P, NONE
 }
 
 
