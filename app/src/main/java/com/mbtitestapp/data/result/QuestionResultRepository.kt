@@ -10,8 +10,7 @@ class QuestionResultRepository(private val questionResultDao: QuestionResultDao)
     fun getQuestionResultAndQuestionStream(id: Long): Flow<List<QuestionResultAndQuestion>> =
         questionResultDao.getQuestionResultAndQuestion(id)
 
-//    fun getQuestionResultAndMbtiResultStream(id: Long): Flow<List<QuestionResultAndMbtiResult>> =
-//        questionResultDao.getQuestionResultAndMbtiResult(id)
 
-
+    fun getQuestionResultDetailStream(mbtiResultId: Long, questionId: Long): Flow<QuestionResultAndQuestion> =
+        questionResultDao.getQuestionResultAndQuestionAndOption(mbtiResultId, questionId)
 }

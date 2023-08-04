@@ -31,13 +31,11 @@ import com.mbtitestapp.ui.menu.MbtiTestMenuDestination
 import com.mbtitestapp.ui.select.OptionData
 import com.mbtitestapp.ui.select.QuestionData
 import com.mbtitestapp.ui.select.RadioButtonOption
-import com.mbtitestapp.ui.select.SelectUiState
-import com.mbtitestapp.ui.theme.MbtiTestAppTheme
 
 object ResultsByQuestionDestination : NavigationDestination {
     override val route = "results_by_question"
     override val titleRes = R.string.app_name
-    const val mbtiResultIdArg = "mbtiResultId"
+    const val mbtiResultIdArg = "mbtiResultIdArg"
     val routeWithArgs = "${this.route}/{$mbtiResultIdArg}"
 }
 
@@ -45,7 +43,7 @@ object ResultsByQuestionDestination : NavigationDestination {
 fun ResultsByQuestionScreen(
     viewModel: ResultsByQuestionViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateBack: () -> Unit,
-    navigateToResultsByQuestionDetail: (Int) -> Unit,
+    navigateToResultsByQuestionDetail: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -59,6 +57,7 @@ fun ResultsByQuestionScreen(
     ) { innerPadding ->
         ResultsByQuestionBody(
             uiState = viewModel.uiState.collectAsState().value,
+            mbtiResultId = viewModel.getMbtiResultId(),
             onItemClick = navigateToResultsByQuestionDetail,
             modifier = Modifier
                 .padding(innerPadding)
@@ -70,7 +69,8 @@ fun ResultsByQuestionScreen(
 @Composable
 fun ResultsByQuestionBody(
     uiState: ResultsByQuestionUiState,
-    onItemClick: (Int) -> Unit,
+    mbtiResultId: Long,
+    onItemClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -85,7 +85,7 @@ fun ResultsByQuestionBody(
                     .fillMaxWidth()
                     .padding(4.dp)
                     .clickable {
-                        onItemClick(index)
+                        onItemClick(questionResultData.id)
                     }
 
             ) {

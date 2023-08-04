@@ -159,6 +159,8 @@ class SelectViewModel (
         val mbti: Mbti = Mbti.values().find { it.name == resultMbtiText.toString() }
             ?: throw IllegalArgumentException("Invalid MBTI type")
 
+
+        // mbti 테스트 결과 db에 추가
         val mbtiResult = MbtiResult(
             mbti = mbti,
             scoreIE = scores[0],
@@ -168,6 +170,7 @@ class SelectViewModel (
         )
         val mbtiResultId = mbtiResultRepository.addMbtiResult(mbtiResult)
 
+        // mbti 테스트 질문별 결과 db에 추가
         val questionResults = mutableListOf<QuestionResult>()
         for ((index, question) in questionDataList.withIndex()) {
 
@@ -221,8 +224,8 @@ data class QuestionData (
     var selectedOption: RadioButtonOption = RadioButtonOption.NONE
 )
 data class OptionData (
-    val optionText: String,
-    val mbtiType: MbtiType
+    val optionText: String = "",
+    val mbtiType: MbtiType = MbtiType.X
 )
 fun Option.toMbtiOptionData(): OptionData = OptionData(
     optionText = optionText,

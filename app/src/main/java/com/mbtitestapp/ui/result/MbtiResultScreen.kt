@@ -51,7 +51,7 @@ import com.mbtitestapp.ui.home.MenuButton
 object MbtiResultDestination : NavigationDestination {
     override val route = "mbti_result"
     override val titleRes = R.string.app_name
-    const val mbtiResultIdArg = "mbtiResultId"
+    const val mbtiResultIdArg = "mbtiResultIdArg"
     val routeWithArgs = "${this.route}/{$mbtiResultIdArg}"
 }
 

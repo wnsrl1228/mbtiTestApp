@@ -50,16 +50,21 @@ class ResultsByQuestionViewModel(
             }
         }
     }
+    fun getMbtiResultId() : Long {
+        return mbtiResultId
+    }
 }
 data class QuestionResultData (
-    val questionText: String,
-    val mbtiCategory: MbtiCategory,
+    val id: Long = 0,
+    val questionText: String = "",
+    val mbtiCategory: MbtiCategory = MbtiCategory.ALL,
     var selectedOption: RadioButtonOption = RadioButtonOption.NONE,
-    val selectedMbtiType: MbtiType
+    val selectedMbtiType: MbtiType = MbtiType.X
 )
 fun QuestionResultAndQuestion.toQuestionResultData() : QuestionResultData = QuestionResultData(
-    questionText = question.questionText,
-    mbtiCategory = question.mbtiCategory,
+    id = questionWithOptions.question.id,
+    questionText = questionWithOptions.question.questionText,
+    mbtiCategory = questionWithOptions.question.mbtiCategory,
     selectedOption = questionResult.selectedOption,
     selectedMbtiType = questionResult.selectedMbtiType
 )

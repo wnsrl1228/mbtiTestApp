@@ -17,7 +17,8 @@ interface QuestionResultDao {
     @Query("SELECT * FROM question_result WHERE mbtiResultId = :id")
     fun getQuestionResultAndQuestion(id: Long): Flow<List<QuestionResultAndQuestion>>
 
-//    @Transaction
-//    @Query("SELECT * FROM question_result WHERE id = :id")
-//    fun getQuestionResultAndMbtiResult(id: Long): Flow<List<QuestionResultAndMbtiResult>>
+    @Transaction
+    @Query("SELECT * FROM question_result WHERE mbtiResultId = :mbtiResultId AND questionId = :questionId ")
+    fun getQuestionResultAndQuestionAndOption(mbtiResultId: Long, questionId: Long): Flow<QuestionResultAndQuestion>
+
 }
