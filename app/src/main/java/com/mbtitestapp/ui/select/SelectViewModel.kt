@@ -163,10 +163,11 @@ class SelectViewModel (
         // mbti 테스트 결과 db에 추가
         val mbtiResult = MbtiResult(
             mbti = mbti,
+            testType = MbtiCategory.valueOf(testType),
             scoreIE = scores[0],
             scoreSN = scores[1],
             scoreTF = scores[2],
-            scorePJ = scores[3]
+            scorePJ = scores[3],
         )
         val mbtiResultId = mbtiResultRepository.addMbtiResult(mbtiResult)
 

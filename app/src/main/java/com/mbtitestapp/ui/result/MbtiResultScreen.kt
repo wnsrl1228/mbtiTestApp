@@ -40,13 +40,18 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.mbtitestapp.MbitTopAppBar
 import com.mbtitestapp.data.Mbti
 import com.mbtitestapp.ui.AppViewModelProvider
 import com.mbtitestapp.ui.home.MenuButton
+import com.mbtitestapp.ui.menu.MbtiTestMenuDestination
+import com.mbtitestapp.ui.select.SelectDestination
 
 object MbtiResultDestination : NavigationDestination {
     override val route = "mbti_result"
@@ -61,7 +66,13 @@ fun MbtiResultScreen (
     viewModel: MbtiResultViewModel = viewModel(factory = AppViewModelProvider.Factory),
     navigateToHome: () -> Unit,
     naviagteToResultsByQuestion: (Long) -> Unit,
+    navController: NavController,
 ) {
+
+    val previousBackStackEntry = navController.previousBackStackEntry
+    val previousRoute = previousBackStackEntry?.destination?.route
+
+    val isPreviousPageSelect = previousRoute?.startsWith(SelectDestination.route) ?: true
 
     var showAlertDialog by remember { mutableStateOf(false) }    // 팝업 창을 표시할 컴포저블 UI
     if (showAlertDialog) {
@@ -85,13 +96,31 @@ fun MbtiResultScreen (
             }
         )
     }
+
+
     BackHandler(enabled = true) {
-        showAlertDialog = true
+
+        if (isPreviousPageSelect) {
+            showAlertDialog = true
+        } else {
+            navController.popBackStack()
+        }
     }
+    
+
 
 
     Scaffold(
         modifier = modifier,
+        topBar = {
+            if (!isPreviousPageSelect) {
+                MbitTopAppBar(
+                    title = stringResource(MbtiTestMenuDestination.titleRes),
+                    canNavigateBack = true,
+                    navigateUp = {navController.popBackStack()},
+                )
+            }
+        },
     ) { innerPadding ->
         MbtiResultBody(
             mbtiResultUiState = viewModel.uiState.collectAsState().value,
@@ -117,7 +146,7 @@ fun MbtiResultBody(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(32.dp),
-        modifier = Modifier
+        modifier = modifier
             .padding(horizontal = 32.dp)
             .verticalScroll(rememberScrollState()), // 스크롤 https://developer.android.com/jetpack/compose/gestures?hl=ko#scrolling
     ) {

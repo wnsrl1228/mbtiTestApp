@@ -44,6 +44,7 @@ object HomeDestination : NavigationDestination {
 fun HomeScreen(
     modifier: Modifier = Modifier,
     navigateToMbtiTestMenu: () -> Unit,
+    navigateToPastResult: () -> Unit
 ) {
 
     Scaffold(
@@ -57,6 +58,7 @@ fun HomeScreen(
     ) { innerPadding ->
         HomeBody(
             onMbtiTestButtonClick = navigateToMbtiTestMenu,
+            onPastResultButtonClick = navigateToPastResult,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -67,6 +69,7 @@ fun HomeScreen(
 @Composable
 fun HomeBody(
     onMbtiTestButtonClick: () -> Unit,
+    onPastResultButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -86,14 +89,9 @@ fun HomeBody(
             text = "테스트 시작하기"
         )
 
-//        MenuButton(
-//            onClick = { /*TODO*/ },
-//            text = "제한시간 테스트 시작하기"
-//        )
-
         MenuButton(
-            onClick = { /*TODO*/ },
-            text = "질문지 보기"
+            onClick = onPastResultButtonClick,
+            text = "이전 결과 보기"
         )
     }
 }
@@ -131,6 +129,6 @@ fun MenuButton(
 @Composable
 fun GreetingPreview() {
     MbtiTestAppTheme {
-        HomeBody(onMbtiTestButtonClick = {} )
+        HomeBody(onMbtiTestButtonClick = {}, onPastResultButtonClick = {} )
     }
 }

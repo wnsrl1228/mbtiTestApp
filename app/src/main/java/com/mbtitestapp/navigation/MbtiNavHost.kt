@@ -1,5 +1,6 @@
 package com.mbtitestapp.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -13,6 +14,8 @@ import com.mbtitestapp.ui.menu.MbtiTestMenuDestination
 import com.mbtitestapp.ui.menu.MbtiTestMenuScreen
 import com.mbtitestapp.ui.result.MbtiResultDestination
 import com.mbtitestapp.ui.result.MbtiResultScreen
+import com.mbtitestapp.ui.result.PastResultDestination
+import com.mbtitestapp.ui.result.PastResultScreen
 import com.mbtitestapp.ui.result.ResultsByQuestionDestination
 import com.mbtitestapp.ui.result.ResultsByQuestionDetailDestination
 import com.mbtitestapp.ui.result.ResultsByQuestionDetailScreen
@@ -33,7 +36,8 @@ fun MbtiNavHost(
     ) {
         composable(route = HomeDestination.route) {
             HomeScreen(
-                navigateToMbtiTestMenu = {navController.navigate(MbtiTestMenuDestination.route)}
+                navigateToMbtiTestMenu = {navController.navigate(MbtiTestMenuDestination.route)},
+                navigateToPastResult = {navController.navigate(PastResultDestination.route)}
             )
         }
 
@@ -44,11 +48,19 @@ fun MbtiNavHost(
             )
         }
 
+        composable(route = PastResultDestination.route) {
+            PastResultScreen(
+                navigateBack = {navController.popBackStack()},
+                navigateToMbtiResult = {navController.navigate("${MbtiResultDestination.route}/${it}")},
+            )
+        }
+
         composable(
             route = SelectDestination.routeWithArgs,
             arguments = listOf(navArgument(SelectDestination.mbtiCategoryArg) {
                 type = NavType.StringType
             })) {
+
             SelectScreen(
                 navigateToMbtiResult = {navController.navigate("${MbtiResultDestination.route}/${it}")},
                 navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
@@ -60,9 +72,11 @@ fun MbtiNavHost(
             arguments = listOf(navArgument(MbtiResultDestination.mbtiResultIdArg) {
                 type = NavType.LongType
             })) {
+
             MbtiResultScreen(
                 navigateToHome = {navController.popBackStack(HomeDestination.route, false)},
                 naviagteToResultsByQuestion = {navController.navigate("${ResultsByQuestionDestination.route}/${it}")},
+                navController = navController
             )
         }
 

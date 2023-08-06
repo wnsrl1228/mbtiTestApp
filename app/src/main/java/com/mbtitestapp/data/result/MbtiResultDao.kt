@@ -18,4 +18,8 @@ interface MbtiResultDao {
     @Transaction
     @Query("SELECT * FROM mbti_result WHERE id = :id")
     fun getMbtiResultAndMbtiInfo(id: Long): Flow<MbtiResultAndMbtiInfo>
+
+    @Transaction
+    @Query("SELECT * FROM mbti_result ORDER BY mbti_result.createdAt DESC")
+    fun getMbtiResultAndMbtiInfoAll(): Flow<List<MbtiResultAndMbtiInfo>>
 }

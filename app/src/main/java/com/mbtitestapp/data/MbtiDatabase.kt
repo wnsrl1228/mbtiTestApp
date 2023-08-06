@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.mbtitestapp.data.question.Option
 import com.mbtitestapp.data.question.OptionDao
 import com.mbtitestapp.data.question.Question
@@ -14,15 +15,17 @@ import com.mbtitestapp.data.result.MbtiResult
 import com.mbtitestapp.data.result.MbtiResultDao
 import com.mbtitestapp.data.result.QuestionResult
 import com.mbtitestapp.data.result.QuestionResultDao
+import com.mbtitestapp.util.Converters
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(
     entities = [MbtiInfo::class, Question::class, Option::class, MbtiResult::class, QuestionResult::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class MbtiDatabase : RoomDatabase() {
 
     abstract fun mbtiInfoDao(): MbtiInfoDao

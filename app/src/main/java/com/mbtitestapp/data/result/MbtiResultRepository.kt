@@ -3,10 +3,11 @@ package com.mbtitestapp.data.result
 import kotlinx.coroutines.flow.Flow
 
 
-class MbtiResultRepository(private val resultDao: MbtiResultDao) {
+class MbtiResultRepository(private val mbtiResultDao: MbtiResultDao) {
 
-    fun getMbtiResultStream(id: Long): Flow<MbtiResult> = resultDao.getMbtiResult(id)
-    fun getMbtiResultAndMbtiInfoStream(id: Long): Flow<MbtiResultAndMbtiInfo> = resultDao.getMbtiResultAndMbtiInfo(id)
+    fun getMbtiResultStream(id: Long): Flow<MbtiResult> = mbtiResultDao.getMbtiResult(id)
+    fun getMbtiResultAndMbtiInfoStream(id: Long): Flow<MbtiResultAndMbtiInfo> = mbtiResultDao.getMbtiResultAndMbtiInfo(id)
 
-    suspend fun addMbtiResult(result: MbtiResult) : Long = resultDao.insert(result)
+    fun getMbtiResultAndMbtiInfoAllStream() : Flow<List<MbtiResultAndMbtiInfo>> = mbtiResultDao.getMbtiResultAndMbtiInfoAll()
+    suspend fun addMbtiResult(result: MbtiResult) : Long = mbtiResultDao.insert(result)
 }
