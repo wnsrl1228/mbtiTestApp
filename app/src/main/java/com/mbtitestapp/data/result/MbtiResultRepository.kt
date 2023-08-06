@@ -10,4 +10,5 @@ class MbtiResultRepository(private val mbtiResultDao: MbtiResultDao) {
 
     fun getMbtiResultAndMbtiInfoAllStream() : Flow<List<MbtiResultAndMbtiInfo>> = mbtiResultDao.getMbtiResultAndMbtiInfoAll()
     suspend fun addMbtiResult(result: MbtiResult) : Long = mbtiResultDao.insert(result)
+    suspend fun deleteMbtiResult(id: Long) = mbtiResultDao.delete(id)
 }

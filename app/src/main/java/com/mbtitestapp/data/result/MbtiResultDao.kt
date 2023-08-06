@@ -1,6 +1,7 @@
 package com.mbtitestapp.data.result
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
@@ -22,4 +23,7 @@ interface MbtiResultDao {
     @Transaction
     @Query("SELECT * FROM mbti_result ORDER BY mbti_result.createdAt DESC")
     fun getMbtiResultAndMbtiInfoAll(): Flow<List<MbtiResultAndMbtiInfo>>
+
+    @Query("DELETE FROM mbti_result WHERE id = :id")
+    suspend fun delete(id: Long)
 }

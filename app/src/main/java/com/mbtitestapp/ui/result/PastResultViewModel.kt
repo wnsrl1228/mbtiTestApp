@@ -14,7 +14,8 @@ import java.util.Date
 import java.util.Locale
 
 data class PastResultUiState(
-    val pastResultDataList: List<PastResultData> = emptyList()
+    val pastResultDataList: List<PastResultData> = emptyList(),
+    val isEmpty: Boolean = false
 )
 class PastResultViewModel(
     private val mbtiResultRepository: MbtiResultRepository
@@ -41,9 +42,13 @@ class PastResultViewModel(
 
                 _uiState.value = _uiState.value.copy(
                     pastResultDataList = pastResultDataList,
+                    isEmpty = pastResultDataList.size == 0
                 )
             }
         }
+    }
+    suspend fun deleteMbtiResult(mbtiResultId: Long) {
+        mbtiResultRepository.deleteMbtiResult(mbtiResultId)
     }
 }
 data class PastResultData (
