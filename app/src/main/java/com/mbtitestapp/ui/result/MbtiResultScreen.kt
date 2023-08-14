@@ -108,8 +108,6 @@ fun MbtiResultScreen (
     }
     
 
-
-
     Scaffold(
         modifier = modifier,
         topBar = {
